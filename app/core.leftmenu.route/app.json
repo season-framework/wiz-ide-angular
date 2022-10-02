@@ -1,0 +1,8 @@
+{
+    "id": "core.leftmenu.route",
+    "ng.build": {
+        "id": "core.leftmenu.route",
+        "name": "CoreLeftmenuRouteComponent",
+        "path": "./core.leftmenu.route/core.leftmenu.route.component"
+    }
+}
