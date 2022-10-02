@@ -1,0 +1,7 @@
+{
+    "ng.build": {
+        "id": "core.rightmenu.pip",
+        "name": "CoreRightmenuPipComponent",
+        "path": "./core.rightmenu.pip/core.rightmenu.pip.component"
+    }
+}

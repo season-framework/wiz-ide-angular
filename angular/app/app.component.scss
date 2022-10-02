@@ -22,7 +22,6 @@
             align-items: center;
             justify-content: center;
             background: var(--wiz-color-blue);
-            border-right: 1px solid var(--wiz-color-border);
 
             img {
                 height: 36px;
@@ -33,12 +32,6 @@
             width: auto;
             flex: auto;
             padding: 0 12px;
-
-            .actions {
-                .dropdown {
-                    display: inline-block;
-                }
-            }
         }
     }
 
@@ -48,12 +41,21 @@
         flex: auto;
         overflow: hidden;
 
-        .workspace-leftapp {
-            width: 240px;
+        .workspace-leftapp,
+        .workspace-rightapp {
             height: 100%;
-            border-right: 1px solid var(--wiz-color-border);
             overflow: hidden;
             position: relative;
+
+            &.workspace-leftapp {
+                width: 240px;
+                border-right: 1px solid var(--wiz-color-border);
+            }
+
+            &.workspace-rightapp {
+                width: 360px;
+                border-left: 1px solid var(--wiz-color-border);
+            }
         }
 
         .workspace-editor {

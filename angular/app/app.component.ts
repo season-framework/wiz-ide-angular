@@ -28,10 +28,6 @@ toastr.options = {
     styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements AfterViewInit {
-    @ViewChild('sideContainer', { read: ViewContainerRef }) sideContainer: ViewContainerRef;
-
-    public isdev = wiz.dev();
-
     constructor(private editor: Editor, private ref: ChangeDetectorRef) {
     }
 
@@ -64,6 +60,10 @@ export class AppComponent implements AfterViewInit {
             await this.editor.update(current_app);
         }
 
+        obj.loading = this.loading;
+        obj.leftmenu = this.leftmenu;
+        obj.rightmenu = this.rightmenu;
+
         this.editor.bind(obj);
         return obj;
     })();
@@ -80,12 +80,6 @@ export class AppComponent implements AfterViewInit {
             item.editor.focus();
         }
 
-        return obj;
-    })();
-
-    public branch: any = (() => {
-        let obj: any = {};
-        obj.current = wiz.branch();
         return obj;
     })();
 
@@ -106,21 +100,22 @@ export class AppComponent implements AfterViewInit {
         return obj;
     })();
 
-    // obj.add = async (componentClass: Type<any>) => {
-    //     const container = this.editorContainer;
-    //     const component = container.createComponent(componentClass);
-    //     component.location.nativeElement.style = "width: 100%; flex: 1;";
+    public rightmenu: any = (() => {
+        let obj: any = {};
 
-    //     component.instance.close = async () => {
-    //         await obj.close(component);
-    //     }
-    // }
+        obj.mode = null;
 
-    // obj.close = async (component: any) => {
-    //     const container = this.editorContainer;
-    //     console.log(component, container.indexOf(component))
-    //     // container.remove(container.indexOf(component));
-    // }
+        obj.toggle = async (mode) => {
+            if (obj.mode == mode) {
+                obj.mode = null;
+            } else {
+                obj.mode = mode;
+            }
+            await this.event.render();
+        }
+
+        return obj;
+    })();
 
     public shortcuts: any = [];
 

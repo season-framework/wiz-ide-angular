@@ -14,18 +14,18 @@
                 h2.page-title @wiz.title
 
             .col-auto.actions.if-desktop
-                .dropdown.me-1(ngbDropdown="")
-                    button.btn.btn-secondary.dropdown-toggle(type="button" ngbDropdownToggle="dropdown" aria-expanded="false") {{branch.current}}
-                    ul.dropdown-menu(ngbDropdownMenu="")
-                        a(ngbDropdownItem="", href="?branch=main") main
-                        a(ngbDropdownItem="", href="?branch=dev") dev
-
-                a.btn.btn-primary.me-1(href="?dev={{!isdev}}") {{isdev ? 'develop' : 'product'}}
-                a.btn.btn-primary.me-1 Clean
-                a.btn.btn-primary.me-1((click)="event.update()") Save
+                wiz-core-topmenu([event]="event")
 
     .workspace-body
         .workspace-leftmenu
+            .d-block
+                .btn((click)="leftmenu.toggle('angular')", [ngClass]="leftmenu.mode == 'angular' ? 'active' : ''")
+                    i.fa-brands.fa-angular
+                    .hover-area
+                        .sidemenu-icon
+                            i.fa-brands.fa-angular
+                        span Angular
+
             .d-block
                 .btn((click)="leftmenu.toggle('page')", [ngClass]="leftmenu.mode == 'page' ? 'active' : ''")
                     i.fa-solid.fa-window-restore
@@ -57,14 +57,22 @@
                         .sidemenu-icon
                             i.fa-solid.fa-link
                         span Route API
-
+            
             .d-block
-                .btn((click)="leftmenu.toggle('angular')", [ngClass]="leftmenu.mode == 'angular' ? 'active' : ''")
-                    i.fa-brands.fa-angular
+                .btn((click)="leftmenu.toggle('model')", [ngClass]="leftmenu.mode == 'model' ? 'active' : ''")
+                    i.fa-solid.fa-database
                     .hover-area
                         .sidemenu-icon
-                            i.fa-brands.fa-angular
-                        span Angular
+                            i.fa-solid.fa-database
+                        span Model
+            
+            .d-block
+                .btn((click)="leftmenu.toggle('controller')", [ngClass]="leftmenu.mode == 'controller' ? 'active' : ''")
+                    i.fa-solid.fa-filter
+                    .hover-area
+                        .sidemenu-icon
+                            i.fa-solid.fa-filter
+                        span Controller
 
             .d-block
                 .btn((click)="leftmenu.toggle('service')", [ngClass]="leftmenu.mode == 'service' ? 'active' : ''")
@@ -172,26 +180,11 @@
                 .minified-item(*ngFor="let item of editor.minified", (click)="editor.reopen(item)") 
                     span {{item.title}}
 
-        .workspace-side
-            ng-container(#sideContainer='')
+        .workspace-rightapp(*ngIf="rightmenu.mode")
+            wiz-core-rightmenu-pip(*ngIf="rightmenu.mode == 'pip'", [event]="event")
+            wiz-core-rightmenu-npm(*ngIf="rightmenu.mode == 'npm'", [event]="event")
 
         .workspace-rightmenu
-            .d-block
-                .btn
-                    i.fa-solid.fa-list-ul
-                    .hover-area
-                        span Browser
-                        .sidemenu-icon
-                            i.fa-solid.fa-list-ul
-
-            .d-block
-                .btn
-                    i.fa-solid.fa-info
-                    .hover-area
-                        span Info
-                        .sidemenu-icon
-                            i.fa-solid.fa-info
-
             .d-block
                 .btn
                     i.fa-solid.fa-eye
@@ -199,22 +192,64 @@
                         span Preview
                         .sidemenu-icon
                             i.fa-solid.fa-eye
+            
+            .d-block
+                .btn
+                    i.fa-solid.fa-code-branch
+                    .hover-area
+                        span Branch
+                        .sidemenu-icon
+                            i.fa-solid.fa-code-branch
+
+            .d-block
+                .btn((click)="rightmenu.toggle('npm')", [ngClass]="rightmenu.mode == 'npm' ? 'active' : ''")
+                    i.fa-solid.fa-boxes-packing
+                    .hover-area
+                        span NPM Package
+                        .sidemenu-icon
+                            i.fa-solid.fa-boxes-packing
+            
+            .d-block
+                .btn((click)="rightmenu.toggle('pip')", [ngClass]="rightmenu.mode == 'pip' ? 'active' : ''")
+                    i.fa-brands.fa-python
+                    .hover-area
+                        span PIP Package
+                        .sidemenu-icon
+                            i.fa-brands.fa-python
 
             .d-block
                 .btn
-                    i.fa-solid.fa-cubes
-            
+                    i.fa-solid.fa-cog
+                    .hover-area
+                        span Config
+                        .sidemenu-icon
+                            i.fa-solid.fa-cog
+
+            .mt-auto
+
             .d-block
                 .btn
-                    i.fa-solid.fa-route
-            
+                    i.fa-solid.fa-wrench
+                    .hover-area
+                        span Server Setting
+                        .sidemenu-icon
+                            i.fa-solid.fa-wrench
+
             .d-block
                 .btn
-                    i.fa-solid.fa-store
-            
+                    i.fa-solid.fa-heart-pulse
+                    .hover-area
+                        span System Status
+                        .sidemenu-icon
+                            i.fa-solid.fa-heart-pulse
+
             .d-block
-                .btn.btn-white
+                .btn
                     i.fa-solid.fa-keyboard
+                    .hover-area
+                        span Shortcuts
+                        .sidemenu-icon
+                            i.fa-solid.fa-keyboard
 
     ng-keyboard-shortcuts([shortcuts]="shortcuts")
     ngx-loading([show]="loading.status")

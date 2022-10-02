@@ -1,0 +1,8 @@
+{
+    "id": "core.leftmenu.route",
+    "ng.build": {
+        "id": "core.topmenu",
+        "name": "CoreTopmenuComponent",
+        "path": "./core.topmenu/core.topmenu.component"
+    }
+}

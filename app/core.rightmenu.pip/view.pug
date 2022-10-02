@@ -1,0 +1,25 @@
+.side-container
+    .side-heading
+        h3.nowrap.m-0(style="max-width: 220px; overflow: hidden; text-overflow: ellipsis;")
+            span PIP Packages
+
+    .side-search.area-round
+        input.form-control(type="text" placeholder="npm package name")
+        button.btn.btn-primary.ms-2 Install
+
+    .side-body
+        table.table.table-hover
+            thead
+                th.text-center Package
+                th.text-center Version
+                th.text-center.w-1
+            tbody
+                tr(*ngFor="let item of package.data")
+                    th {{item.name}}
+                    td {{item.version}}
+                    td.w-1.nowrap
+                        button.btn.btn-sm.me-1
+                            i.fa-solid.fa-circle-up
+                        button.btn.btn-sm
+                            i.fa-solid.fa-trash
+                        
