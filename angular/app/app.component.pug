@@ -1,4 +1,7 @@
 .workspace
+    .d-none
+        #dummy-modal-click((click)="alert.cache()")
+
     .workspace-header.area-round
         .workspace-title
             img.m-0(src="assets/logo.png")
@@ -122,56 +125,10 @@
                         a.btn.btn-square.btn-sm.p-2(*ngFor="let tab of item.tabs; index as idx", (click)="editor.load(item, idx)", [ngClass]="idx == item.current ? 'btn-white' : 'btn-primary'") {{tab.name}}
                         
                     .editor-container
-                        .editor-info(*ngIf="item.tabs[item.current].mode == 'info.app'")
-                            .editor-info-container.area-round
-                                h3 App Info
+                        wiz-core-editor-app-info(*ngIf="item.tabs[item.current].mode == 'info.app'", [item]="item", [event]="event")
 
-                                .form-group.row
-                                    .col-3
-                                        label.form-label.col-form-label Title
-                                    .col
-                                        input.form-control.form-control-sm(type="text" placeholder="page.auth.login", [(ngModel)]="item.info.title")
-                                
-                                .form-group.row
-                                    .col-3
-                                        label.form-label.col-form-label Namespace
-                                    .col
-                                        input.form-control.form-control-sm(type="text" placeholder="page.auth.login", [(ngModel)]="item.info.namespace")
-
-                                .form-group.row
-                                    .col-3
-                                        label.form-label.col-form-label Category
-                                    .col
-                                        input.form-control.form-control-sm(type="text" placeholder="page.auth.login", [(ngModel)]="item.info.category")
-
-                        .editor-info(*ngIf="item.tabs[item.current].mode == 'info.route'")
-                            .editor-info-container.area-round
-                                h3 Route Info
-
-                                .form-group.row
-                                    .col-3
-                                        label.form-label.col-form-label Title
-                                    .col
-                                        input.form-control.form-control-sm(type="text" placeholder="page.auth.login", [(ngModel)]="item.info.title")
-                                
-                                .form-group.row
-                                    .col-3
-                                        label.form-label.col-form-label ID
-                                    .col
-                                        input.form-control.form-control-sm(type="text" placeholder="auth.login", [(ngModel)]="item.info.id")
-
-                                .form-group.row
-                                    .col-3
-                                        label.form-label.col-form-label Route
-                                    .col
-                                        input.form-control.form-control-sm(type="text" placeholder="/app/<path:path>", [(ngModel)]="item.info.route")
-
-                                .form-group.row
-                                    .col-3
-                                        label.form-label.col-form-label Category
-                                    .col
-                                        input.form-control.form-control-sm(type="text" placeholder="page.auth.login", [(ngModel)]="item.info.category")
-
+                        wiz-core-editor-route-info(*ngIf="item.tabs[item.current].mode == 'info.route'", [item]="item", [event]="event")
+                        
                         .editor-monaco(*ngIf="item.tabs[item.current].mode == 'code'")
                             nu-monaco-editor([(ngModel)]="editor.files[item.tabs[item.current].path]", [options]="item.tabs[item.current].config", [height]="'100%'", (event)="init.editor(item, $event)")
 
@@ -181,12 +138,13 @@
                     span {{item.title}}
 
         .workspace-rightapp(*ngIf="rightmenu.mode")
+            wiz-core-rightmenu-preview(*ngIf="rightmenu.mode == 'preview'", [event]="event", (binding)="binding.bind($event)")
             wiz-core-rightmenu-pip(*ngIf="rightmenu.mode == 'pip'", [event]="event")
             wiz-core-rightmenu-npm(*ngIf="rightmenu.mode == 'npm'", [event]="event")
 
         .workspace-rightmenu
             .d-block
-                .btn
+                .btn((click)="rightmenu.toggle('preview')", [ngClass]="rightmenu.mode == 'preview' ? 'active' : ''")
                     i.fa-solid.fa-eye
                     .hover-area
                         span Preview
@@ -194,12 +152,20 @@
                             i.fa-solid.fa-eye
             
             .d-block
-                .btn
+                .btn((click)="rightmenu.toggle('branch')", [ngClass]="rightmenu.mode == 'branch' ? 'active' : ''")
                     i.fa-solid.fa-code-branch
                     .hover-area
                         span Branch
                         .sidemenu-icon
                             i.fa-solid.fa-code-branch
+            
+            .d-block
+                .btn((click)="rightmenu.toggle('commit')", [ngClass]="rightmenu.mode == 'commit' ? 'active' : ''")
+                    i.fa-solid.fa-code-commit
+                    .hover-area
+                        span Commit
+                        .sidemenu-icon
+                            i.fa-solid.fa-code-commit
 
             .d-block
                 .btn((click)="rightmenu.toggle('npm')", [ngClass]="rightmenu.mode == 'npm' ? 'active' : ''")
@@ -218,7 +184,7 @@
                             i.fa-brands.fa-python
 
             .d-block
-                .btn
+                .btn((click)="rightmenu.toggle('config')", [ngClass]="rightmenu.mode == 'config' ? 'active' : ''")
                     i.fa-solid.fa-cog
                     .hover-area
                         span Config
@@ -228,7 +194,7 @@
             .mt-auto
 
             .d-block
-                .btn
+                .btn((click)="rightmenu.toggle('setting')", [ngClass]="rightmenu.mode == 'setting' ? 'active' : ''")
                     i.fa-solid.fa-wrench
                     .hover-area
                         span Server Setting
@@ -236,20 +202,12 @@
                             i.fa-solid.fa-wrench
 
             .d-block
-                .btn
+                .btn((click)="rightmenu.toggle('status')", [ngClass]="rightmenu.mode == 'status' ? 'active' : ''")
                     i.fa-solid.fa-heart-pulse
                     .hover-area
                         span System Status
                         .sidemenu-icon
                             i.fa-solid.fa-heart-pulse
-
-            .d-block
-                .btn
-                    i.fa-solid.fa-keyboard
-                    .hover-area
-                        span Shortcuts
-                        .sidemenu-icon
-                            i.fa-solid.fa-keyboard
 
     ng-keyboard-shortcuts([shortcuts]="shortcuts")
     ngx-loading([show]="loading.status")

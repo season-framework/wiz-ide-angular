@@ -24,11 +24,52 @@ export class Component implements OnInit {
     @Input() event: any;
     @Input() appmode: any;
 
-    APP_ID: string = "core.leftmenu.apps";
+    APP_ID: string = wiz.namespace;
+    public keyword: string = "";
 
     constructor(private editor: Editor, private ref: ChangeDetectorRef) {
+    }
+
+    public async ngOnInit() {
+        let editor = this.editor;
+
         editor.setUpdate(this.APP_ID, async (item: any) => {
-            toastr.info("Request update");
+            let check = /^[a-z0-9.]+$/.test(item.info.namespace);
+            if (!check) {
+                toastr.error("invalidate namespace");
+                return;
+            }
+
+            if (item.info.namespace.length < 3) {
+                toastr.error("namespace at least 3 alphabets");
+                return;
+            }
+
+            if (!item.path) {
+                let id = item.info.mode + "." + item.info.namespace;
+                let res = await wiz.call("exists", { id });
+                if (res.data) {
+                    toastr.error("namespace already exists");
+                    return;
+                }
+
+                let code: any = {};
+                code.title = item.info.title;
+                code.namespace = item.info.namespace;
+                code.category = item.info.category;
+                code.viewuri = item.info.viewuri;
+                code.mode = this.appmode;
+                let fullid = code.mode + "." + code.namespace;
+                code.id = fullid
+                code = JSON.stringify(code, null, 4);
+                let path = "app/" + fullid + "/app.json";
+
+                editor.close(item);
+                await wiz.call('update', { path, code, isnew: true });
+
+                await this.app.load();
+                return;
+            }
 
             let target = item.tabs[item.current];
             let path = target.path;
@@ -40,35 +81,125 @@ export class Component implements OnInit {
                 code.title = item.info.title;
                 code.namespace = item.info.namespace;
                 code.category = item.info.category;
+                code.viewuri = item.info.viewuri;
                 let fullid = code.mode + "." + code.namespace;
+                code.id = fullid
                 code = JSON.stringify(code, null, 4);
                 data = { path, code, moved: item.info.id == fullid ? false : { from: item.info.id, to: fullid } };
             }
 
+            let orgapppath = item.path + "";
             if (data.moved) {
-                console.log("moved", data);
-            } else {
-                let { code } = await wiz.call('update', data);
-                if (code == 200) {
-                    toastr.success("Updated");
-                } else {
-                    toastr.error("Error on update");
+                let { from, to } = data.moved;
+                data.id = to;
+                data.path = data.path.split("/");
+                data.path[1] = to;
+                data.path = data.path.join("/");
+                let res = await wiz.call("move", { from, to });
+                if (res.code == 400) {
+                    toastr.error("invalidate namespace");
+                    return;
+                }
+
+                item.title = item.info.title;
+                item.info.id = to;
+                item.subtitle = to;
+                item.path = "app/" + to;
+                for (let i = 0; i < item.tabs.length; i++) {
+                    let orgpath = item.tabs[i].path;
+                    let orgdata = await editor.getData(orgpath);
+                    item.tabs[i].path = item.tabs[i].path.split("/");
+                    item.tabs[i].path[1] = to;
+                    item.tabs[i].path = item.tabs[i].path.join("/");
+                    await this.editor.setData(item.tabs[i].path, orgdata);
+                    await editor.deleteData(orgpath);
                 }
             }
 
+            await editor.replace(this.APP_ID, orgapppath, async (target) => {
+                target.info = item.info;
+                target.title = item.info.title ? item.info.title : item.info.namespace;
+                target.subtitle = item.info.id;
+                target.path = item.path;
+                target.tabs = item.tabs;
+                return target;
+            });
+
+            if (data.moved) data.moved = true;
+            toastr.info("Request update");
+            let res = await wiz.call('update', data);
+            if (res.code == 200) {
+                toastr.success("Updated");
+            } else {
+                toastr.error("Error on update");
+            }
+
+            await this.app.load();
+
+            let binding = this.event.binding.load("core.rightmenu.preview");
+            if (binding && item.info.viewuri)
+                await binding.move(item.info.viewuri);
+        });
+
+        editor.setRemove(this.APP_ID, async (item: any) => {
+            let targets = await editor.find(this.APP_ID, item.path);
+            for (let i = 0; i < targets.length; i++) {
+                await editor.close(targets[i]);
+            }
+            await wiz.call("remove", { path: item.path });
             await this.app.load();
         });
-    }
 
-    public async ngOnInit() {
         await this.app.load();
     }
 
     app = (() => {
         let obj: any = {};
 
+        let monacoConfig: any = {
+            wordWrap: true,
+            roundedSelection: false,
+            scrollBeyondLastLine: false,
+            glyphMargin: false,
+            folding: true,
+            fontSize: 14,
+            automaticLayout: true,
+            minimap: { enabled: false }
+        }
+
         obj.data = {};
         obj.categories = [];
+
+        obj.match = (item) => {
+            if (item.title.toLowerCase().indexOf(this.keyword.toLowerCase()) >= 0) {
+                return true;
+            }
+            if (item.subtitle.toLowerCase().indexOf(this.keyword.toLowerCase()) >= 0) {
+                return true;
+            }
+            return false;
+        }
+
+        obj.create = async () => {
+            let std: any = {
+                app_id: this.APP_ID,
+                title: 'New',
+                subtitle: null,
+                current: 0,
+                path: null,
+                info: {
+                    id: null,
+                    title: '',
+                    namespace: '',
+                    viewuri: '',
+                    mode: this.appmode,
+                    category: ''
+                },
+                tabs: [{ name: "Info", mode: "info.app", path: "new-item/app.json" }]
+            };
+
+            obj.open(std);
+        }
 
         obj.load = async () => {
             let { code, data } = await wiz.call("list", { mode: this.appmode });
@@ -84,17 +215,6 @@ export class Component implements OnInit {
                 if (!category) category = 'undefined';
 
                 let tabs: any = [];
-
-                let monacoConfig: any = {
-                    wordWrap: true,
-                    roundedSelection: false,
-                    scrollBeyondLastLine: false,
-                    glyphMargin: false,
-                    folding: true,
-                    fontSize: 14,
-                    automaticLayout: true,
-                    minimap: { enabled: false }
-                }
 
                 tabs.push(
                     { name: "Info", mode: "info.app", path: apppath + "/app.json" },
@@ -140,6 +260,7 @@ export class Component implements OnInit {
                         id: app.id,
                         title: app.title ? app.title : app.namespace,
                         namespace: app.namespace,
+                        viewuri: app.viewuri,
                         mode: mode,
                         category: category
                     },

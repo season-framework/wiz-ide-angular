@@ -1,0 +1,7 @@
+{
+    "ng.build": {
+        "id": "core.editor.route.info",
+        "name": "CoreEditorRouteInfoComponent",
+        "path": "./core.editor.route.info/core.editor.route.info.component"
+    }
+}

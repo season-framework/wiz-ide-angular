@@ -23,7 +23,7 @@ toastr.options = {
 export class Component implements OnInit {
     @Input() event: any;
 
-    APP_ID: string = "core.leftmenu.angular";
+    APP_ID: string = wiz.namespace;
 
     constructor(private editor: Editor, private ref: ChangeDetectorRef) {
         editor.setUpdate(this.APP_ID, async (item: any) => {

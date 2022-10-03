@@ -1,0 +1,7 @@
+{
+    "ng.build": {
+        "id": "core.rightmenu.preview",
+        "name": "CoreRightmenuPreviewComponent",
+        "path": "./core.rightmenu.preview/core.rightmenu.preview.component"
+    }
+}

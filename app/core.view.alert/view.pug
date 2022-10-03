@@ -1,0 +1,8 @@
+.modal-header
+    h4.modal-title {{title}}
+    a.btn-close(aria-label="Close", (click)="activeModal.dismiss()")
+.modal-body
+    p {{message}}
+.modal-footer.d-flex
+    a.btn.btn-white.mr-auto(type="button", (click)="activeModal.dismiss()") {{close_text}}
+    a(class="btn {{action_class}}", type="button", (click)="activeModal.close(true)") {{action_text}}

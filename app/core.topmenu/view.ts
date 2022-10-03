@@ -22,7 +22,7 @@ toastr.options = {
 
 export class Component implements OnInit {
     @Input() event: any;
-    public APP_ID: string = "core.topmenu";
+    public APP_ID: string = wiz.namespace;
 
     constructor(private editor: Editor) {
     }
@@ -51,7 +51,7 @@ export class Component implements OnInit {
         await this.event.loading.show();
         try {
             let { code, data } = await wiz.call("clean");
-            if(code == 200) {
+            if (code == 200) {
                 toastr.success("Build Cleaned");
             } else {
                 toastr.error("Error");

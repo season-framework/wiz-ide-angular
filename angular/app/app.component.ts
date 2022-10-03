@@ -1,5 +1,10 @@
-import { Component, ViewChild, ViewContainerRef, AfterViewInit, ChangeDetectorRef } from '@angular/core';
+import $ from 'jquery';
+import { Component, AfterViewInit, ChangeDetectorRef } from '@angular/core';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import Editor from '@wiz/service/editor';
+
+import { CoreViewAlertComponent } from "@wiz/app/core.view.alert";
+
 import { NuMonacoEditorEvent } from '@ng-util/monaco-editor';
 import { KeyMod, KeyCode } from 'monaco-editor';
 import toastr from "toastr";
@@ -28,8 +33,39 @@ toastr.options = {
     styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements AfterViewInit {
-    constructor(private editor: Editor, private ref: ChangeDetectorRef) {
+
+    constructor(private editor: Editor, private ref: ChangeDetectorRef, public modalService: NgbModal) {
     }
+
+    public alert: any = (() => {
+        let obj: any = {};
+        obj.cache = () => { };
+
+        obj.show = (options) => new Promise((resolve) => {
+            obj.cache = () => {
+                let { title, message, action_text, action_class, close_text } = options;
+                if (!close_text) close_text = "Close";
+                if (!action_class) action_class = "btn-primary";
+                if (!action_text) action_text = "Confirm";
+
+                const modalRef = this.modalService.open(CoreViewAlertComponent, { size: 'sm' });
+                modalRef.componentInstance.title = title;
+                modalRef.componentInstance.message = message;
+                modalRef.componentInstance.action_text = action_text;
+                modalRef.componentInstance.action_class = action_class;
+                modalRef.componentInstance.close_text = close_text;
+                modalRef.result.then((result) => {
+                    resolve(result);
+                }, () => {
+                    resolve(false);
+                });
+            }
+
+            $('#dummy-modal-click').click();
+        });
+
+        return obj;
+    })();
 
     public loading: any = (() => {
         let obj: any = {};
@@ -47,24 +83,21 @@ export class AppComponent implements AfterViewInit {
         return obj;
     })();
 
-    public event: any = (() => {
+    public binding: any = (() => {
         let obj: any = {};
 
-        obj.render = async () => {
-            this.ref.detectChanges();
+        obj.data = {};
+
+        obj.bind = (options: any) => {
+            let id = options.id;
+            let data = options.data;
+            obj.data[id] = data;
         }
 
-        obj.update = async () => {
-            let current_app = this.editor.activated;
-            if (!current_app) return;
-            await this.editor.update(current_app);
+        obj.load = (id: any) => {
+            return obj.data[id];
         }
 
-        obj.loading = this.loading;
-        obj.leftmenu = this.leftmenu;
-        obj.rightmenu = this.rightmenu;
-
-        this.editor.bind(obj);
         return obj;
     })();
 
@@ -117,12 +150,68 @@ export class AppComponent implements AfterViewInit {
         return obj;
     })();
 
+    public event: any = (() => {
+        let obj: any = {};
+
+        obj.render = async () => {
+            this.ref.detectChanges();
+        }
+
+        obj.update = async () => {
+            let current_app = this.editor.activated;
+            if (!current_app) return;
+            await this.editor.update(current_app);
+        }
+
+        obj.remove = async (item: any) => {
+            if (!item) item = this.editor.activated;
+            if (!item) return;
+            let res = await this.alert.show({ title: 'Delete App', message: 'Are you sure remove "' + item.path + '"?', action_text: "Delete", action_class: "btn-danger" });
+            if (res !== true) return;
+            await this.editor.remove(item);
+        }
+
+        obj.log = async (value: any, tag = "ide") => {
+            const Style = {
+                base: [
+                    "color: #fff",
+                    "background-color: #444",
+                    "padding: 2px 4px",
+                    "border-radius: 2px"
+                ],
+                ide: [
+                    "background-color: blue"
+                ],
+                server: [
+                    "background-color: green"
+                ]
+            }
+
+            if (tag == 'server') {
+                let style = Style.base.join(';') + ';';
+                style += Style.server.join(';');
+                console.log(`%cwiz.was%c ` + value, style, null);
+            } else {
+                let style = Style.base.join(';') + ';';
+                style += Style.ide.join(';');
+                console.log(`%cwiz.ide%c`, style, null, value);
+            }
+        }
+
+        obj.loading = this.loading;
+        obj.leftmenu = this.leftmenu;
+        obj.rightmenu = this.rightmenu;
+        obj.binding = this.binding;
+        obj.alert = this.alert;
+
+        this.editor.bind(obj);
+        return obj;
+    })();
+
     public shortcuts: any = [];
 
     public async ngAfterViewInit() {
-
         // bind shortcuts
-
         this.shortcuts.push({
             key: ["cmd + s", "ctrl + s"],
             monaco: KeyMod.CtrlCmd | KeyCode.KeyS,
@@ -191,7 +280,7 @@ export class AppComponent implements AfterViewInit {
         });
 
         socket.on("log", async (data) => {
-            console.log(data);
+            this.event.log(data, "server");
         });
 
     }

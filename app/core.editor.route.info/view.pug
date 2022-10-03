@@ -1,0 +1,45 @@
+.editor-info
+    .editor-info-container.area-round
+        h3 Route Info
+
+        .form-group.row
+            .col-3
+                label.form-label.col-form-label Title
+            .col
+                input.form-control.form-control-sm(type="text" placeholder="Route Title", [(ngModel)]="item.info.title")
+        
+        .form-group.row
+            .col-3
+                label.form-label.col-form-label ID
+            .col
+                input.form-control.form-control-sm(type="text" placeholder="auth.login", [(ngModel)]="item.info.id")
+
+        .form-group.row
+            .col-3
+                label.form-label.col-form-label Route
+            .col
+                input.form-control.form-control-sm(type="text" placeholder="/app/<path:path>", [(ngModel)]="item.info.route")
+
+        .form-group.row
+            .col-3
+                label.form-label.col-form-label Category
+            .col
+                input.form-control.form-control-sm(type="text" placeholder="auth", [(ngModel)]="item.info.category")
+        
+        .form-group.row
+            .col-3
+                label.form-label.col-form-label Preview URL
+            .col
+                input.form-control.form-control-sm(type="text" placeholder="/main", [(ngModel)]="item.info.viewuri")
+
+        .form-group.row(*ngIf="item.path")
+            .col-3
+                label.form-label.col-form-label Delete Route
+            .col
+                button.btn.btn-outline-red.btn-block((click)="event.remove(item)") Delete
+
+        .form-group.row(*ngIf="!item.path")
+            .col-3
+                label.form-label.col-form-label Create Route
+            .col
+                button.btn.btn-outline-blue.btn-block((click)="event.update()") Create

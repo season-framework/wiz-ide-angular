@@ -5,7 +5,6 @@ export class Editor {
     activated: any;
     shortcuts: any = [];
     event: any;
-    updater: any = {};
 
     public async bind(event: any) {
         this.event = event;
@@ -54,16 +53,24 @@ export class Editor {
 
     public async close(item: any) {
         let location = this.data.indexOf(item);
-        this.data.remove(item);
-        if (this.activated && item.editor_id == this.activated.editor_id) {
-            if (this.data[location]) {
-                await this.active(this.data[location]);
-            } else if (this.data[location - 1]) {
-                await this.active(this.data[location - 1]);
-            } else {
-                this.activated = null;
+        if (location >= 0) {
+            this.data.remove(item);
+            if (this.activated && item.editor_id == this.activated.editor_id) {
+                if (this.data[location]) {
+                    await this.active(this.data[location]);
+                } else if (this.data[location - 1]) {
+                    await this.active(this.data[location - 1]);
+                } else {
+                    this.activated = null;
+                }
+            }
+        } else {
+            location = this.minified.indexOf(item);
+            if (location >= 0) {
+                this.minified.remove(item);
             }
         }
+
         await this.event.render();
     }
 
@@ -98,23 +105,85 @@ export class Editor {
         return this.files[path];
     }
 
+    public async deleteData(path: string) {
+        delete this.files[path];
+    }
+
     // update trigger
+    public updater: any = {};
+
     public async setUpdate(app_id: string, fn: any) {
         this.updater[app_id] = fn;
     }
 
     public async update(item: any) {
-        let target = item.tabs[item.current];
         let app_id = item.app_id;
-
-        if (!this.updater[app_id]) {
-            let path = target.path;
-            let code = await this.getData(path);
-            return { path, code };
-        }
-
+        if (!this.updater[app_id])
+            return;
         await this.updater[app_id](item);
     }
+
+    // remove trigger
+    public remover: any = {};
+
+    public async setRemove(app_id: string, fn: any) {
+        this.remover[app_id] = fn;
+    }
+
+    public async remove(item: any) {
+        let app_id = item.app_id;
+        if (!this.remover[app_id])
+            return;
+        await this.remover[app_id](item);
+    }
+
+    // replace trigger
+    public async replace(app_id: any, path: any, fn: any) {
+        for (let i = 0; i < this.data.length; i++) {
+            let obj = this.data[i];
+            if (obj.app_id != app_id) continue;
+            if (obj.path != path) continue;
+
+            let changed = await fn(obj);
+            if (changed)
+                this.data[i] = changed;
+
+        }
+
+        for (let i = 0; i < this.minified.length; i++) {
+            let obj = this.minified[i];
+            if (obj.app_id != app_id) continue;
+            if (obj.path != path) continue;
+
+            let changed = await fn(obj);
+            if (changed)
+                this.minified[i] = changed;
+
+        }
+
+        await this.event.render();
+    }
+
+    public async find(app_id: any, path: any) {
+        let res: any = [];
+
+        for (let i = 0; i < this.data.length; i++) {
+            let obj = this.data[i];
+            if (obj.app_id != app_id) continue;
+            if (obj.path != path) continue;
+            res.push(obj);
+        }
+
+        for (let i = 0; i < this.minified.length; i++) {
+            let obj = this.minified[i];
+            if (obj.app_id != app_id) continue;
+            if (obj.path != path) continue;
+            res.push(obj);
+        }
+
+        return res;
+    }
+
 }
 
 export default Editor;
