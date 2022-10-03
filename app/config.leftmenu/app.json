@@ -1,0 +1,7 @@
+{
+    "ng.build": {
+        "id": "config.leftmenu",
+        "name": "ConfigLeftmenuComponent",
+        "path": "./config.leftmenu/config.leftmenu.component"
+    }
+}

@@ -21,92 +21,24 @@
 
     .workspace-body
         .workspace-leftmenu
-            .d-block
-                .btn((click)="leftmenu.toggle('angular')", [ngClass]="leftmenu.mode == 'angular' ? 'active' : ''")
-                    i.fa-brands.fa-angular
+            .d-block(*ngFor="let item of leftmenu.top")
+                .btn((click)="leftmenu.toggle(item.id)", [ngClass]="leftmenu.mode == item.id ? 'active' : ''")
+                    i(class="{{ item.icon }}")
                     .hover-area
                         .sidemenu-icon
-                            i.fa-brands.fa-angular
-                        span Angular
-
-            .d-block
-                .btn((click)="leftmenu.toggle('page')", [ngClass]="leftmenu.mode == 'page' ? 'active' : ''")
-                    i.fa-solid.fa-window-restore
+                            i(class="{{ item.icon }}")
+                        span {{ item.name }}
+            .mt-auto
+            .d-block(*ngFor="let item of leftmenu.bottom")
+                .btn((click)="leftmenu.toggle(item.id)", [ngClass]="leftmenu.mode == item.id ? 'active' : ''")
+                    i(class="{{ item.icon }}")
                     .hover-area
                         .sidemenu-icon
-                            i.fa-solid.fa-window-restore
-                        span Page
-            
-            .d-block
-                .btn((click)="leftmenu.toggle('layout')", [ngClass]="leftmenu.mode == 'layout' ? 'active' : ''")
-                    i.fa-solid.fa-table-columns
-                    .hover-area
-                        .sidemenu-icon
-                            i.fa-solid.fa-table-columns
-                        span Layout
-
-            .d-block
-                .btn((click)="leftmenu.toggle('component')", [ngClass]="leftmenu.mode == 'component' ? 'active' : ''")
-                    i.fa-solid.fa-cubes
-                    .hover-area
-                        .sidemenu-icon
-                            i.fa-solid.fa-cubes
-                        span Component
-            
-            .d-block
-                .btn((click)="leftmenu.toggle('route')", [ngClass]="leftmenu.mode == 'route' ? 'active' : ''")
-                    i.fa-solid.fa-link
-                    .hover-area
-                        .sidemenu-icon
-                            i.fa-solid.fa-link
-                        span Route API
-            
-            .d-block
-                .btn((click)="leftmenu.toggle('model')", [ngClass]="leftmenu.mode == 'model' ? 'active' : ''")
-                    i.fa-solid.fa-database
-                    .hover-area
-                        .sidemenu-icon
-                            i.fa-solid.fa-database
-                        span Model
-            
-            .d-block
-                .btn((click)="leftmenu.toggle('controller')", [ngClass]="leftmenu.mode == 'controller' ? 'active' : ''")
-                    i.fa-solid.fa-filter
-                    .hover-area
-                        .sidemenu-icon
-                            i.fa-solid.fa-filter
-                        span Controller
-
-            .d-block
-                .btn((click)="leftmenu.toggle('service')", [ngClass]="leftmenu.mode == 'service' ? 'active' : ''")
-                    i.fa-solid.fa-hammer
-                    .hover-area
-                        .sidemenu-icon
-                            i.fa-solid.fa-hammer
-                        span Service
-
-            .d-block
-                .btn((click)="leftmenu.toggle('styles')", [ngClass]="leftmenu.mode == 'styles' ? 'active' : ''")
-                    i.fa-brands.fa-css3-alt
-                    .hover-area
-                        .sidemenu-icon
-                            i.fa-brands.fa-css3-alt
-                        span Styles
-
-            .d-block
-                .btn((click)="leftmenu.toggle('assets')", [ngClass]="leftmenu.mode == 'assets' ? 'active' : ''")
-                    i.fa-solid.fa-images
-                    .hover-area
-                        .sidemenu-icon
-                            i.fa-solid.fa-images
-                        span Assets
+                            i(class="{{ item.icon }}")
+                        span {{ item.name }}
 
         .workspace-leftapp.area-round(*ngIf="leftmenu.mode")
-            wiz-core-leftmenu-apps(*ngIf="leftmenu.mode == 'page'", [event]="event", [appmode]="'page'")
-            wiz-core-leftmenu-apps(*ngIf="leftmenu.mode == 'layout'", [event]="event", [appmode]="'layout'")
-            wiz-core-leftmenu-apps(*ngIf="leftmenu.mode == 'component'", [event]="event", [appmode]="'component'")
-            wiz-core-leftmenu-angular(*ngIf="leftmenu.mode == 'angular'", [event]="event")
-            wiz-core-leftmenu-route(*ngIf="leftmenu.mode == 'route'", [event]="event")
+            wiz-config-leftmenu([event]="event", [menu]="leftmenu", [binding]="binding")
 
         .workspace-editor
             .editor-list
@@ -138,76 +70,24 @@
                     span {{item.title}}
 
         .workspace-rightapp(*ngIf="rightmenu.mode")
-            wiz-core-rightmenu-preview(*ngIf="rightmenu.mode == 'preview'", [event]="event", (binding)="binding.bind($event)")
-            wiz-core-rightmenu-pip(*ngIf="rightmenu.mode == 'pip'", [event]="event")
-            wiz-core-rightmenu-npm(*ngIf="rightmenu.mode == 'npm'", [event]="event")
+            wiz-config-rightmenu([event]="event", [menu]="rightmenu", [binding]="binding")
 
         .workspace-rightmenu
-            .d-block
-                .btn((click)="rightmenu.toggle('preview')", [ngClass]="rightmenu.mode == 'preview' ? 'active' : ''")
-                    i.fa-solid.fa-eye
+            .d-block(*ngFor="let item of rightmenu.top")
+                .btn((click)="rightmenu.toggle(item.id)", [ngClass]="rightmenu.mode == item.id ? 'active' : ''")
+                    i(class="{{ item.icon }}")
                     .hover-area
-                        span Preview
+                        span {{ item.name }}
                         .sidemenu-icon
-                            i.fa-solid.fa-eye
-            
-            .d-block
-                .btn((click)="rightmenu.toggle('branch')", [ngClass]="rightmenu.mode == 'branch' ? 'active' : ''")
-                    i.fa-solid.fa-code-branch
-                    .hover-area
-                        span Branch
-                        .sidemenu-icon
-                            i.fa-solid.fa-code-branch
-            
-            .d-block
-                .btn((click)="rightmenu.toggle('commit')", [ngClass]="rightmenu.mode == 'commit' ? 'active' : ''")
-                    i.fa-solid.fa-code-commit
-                    .hover-area
-                        span Commit
-                        .sidemenu-icon
-                            i.fa-solid.fa-code-commit
-
-            .d-block
-                .btn((click)="rightmenu.toggle('npm')", [ngClass]="rightmenu.mode == 'npm' ? 'active' : ''")
-                    i.fa-solid.fa-boxes-packing
-                    .hover-area
-                        span NPM Package
-                        .sidemenu-icon
-                            i.fa-solid.fa-boxes-packing
-            
-            .d-block
-                .btn((click)="rightmenu.toggle('pip')", [ngClass]="rightmenu.mode == 'pip' ? 'active' : ''")
-                    i.fa-brands.fa-python
-                    .hover-area
-                        span PIP Package
-                        .sidemenu-icon
-                            i.fa-brands.fa-python
-
-            .d-block
-                .btn((click)="rightmenu.toggle('config')", [ngClass]="rightmenu.mode == 'config' ? 'active' : ''")
-                    i.fa-solid.fa-cog
-                    .hover-area
-                        span Config
-                        .sidemenu-icon
-                            i.fa-solid.fa-cog
-
+                            i(class="{{ item.icon }}")
             .mt-auto
-
-            .d-block
-                .btn((click)="rightmenu.toggle('setting')", [ngClass]="rightmenu.mode == 'setting' ? 'active' : ''")
-                    i.fa-solid.fa-wrench
+            .d-block(*ngFor="let item of rightmenu.bottom")
+                .btn((click)="rightmenu.toggle(item.id)", [ngClass]="rightmenu.mode == item.id ? 'active' : ''")
+                    i(class="{{ item.icon }}")
                     .hover-area
-                        span Server Setting
+                        span {{ item.name }}
                         .sidemenu-icon
-                            i.fa-solid.fa-wrench
-
-            .d-block
-                .btn((click)="rightmenu.toggle('status')", [ngClass]="rightmenu.mode == 'status' ? 'active' : ''")
-                    i.fa-solid.fa-heart-pulse
-                    .hover-area
-                        span System Status
-                        .sidemenu-icon
-                            i.fa-solid.fa-heart-pulse
+                            i(class="{{ item.icon }}")
 
     ng-keyboard-shortcuts([shortcuts]="shortcuts")
     ngx-loading([show]="loading.status")

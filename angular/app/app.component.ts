@@ -120,6 +120,8 @@ export class AppComponent implements AfterViewInit {
         let obj: any = {};
 
         obj.mode = "page";
+        obj.top = [];
+        obj.bottom = [];
 
         obj.toggle = async (mode) => {
             if (obj.mode == mode) {
@@ -130,13 +132,28 @@ export class AppComponent implements AfterViewInit {
             await this.event.render();
         }
 
+        obj.build = async (top: any, bottom: any) => {
+            obj.top = [];
+            obj.bottom = [];
+
+            for (let i = 0; i < top.length; i++)
+                obj.top.push(top[i]);
+
+            if (bottom)
+                for (let i = 0; i < bottom.length; i++)
+                    obj.bottom.push(bottom[i]);
+            await this.ref.detectChanges();
+        }
+
         return obj;
     })();
 
     public rightmenu: any = (() => {
         let obj: any = {};
 
-        obj.mode = null;
+        obj.mode = 'preview';
+        obj.top = [];
+        obj.bottom = [];
 
         obj.toggle = async (mode) => {
             if (obj.mode == mode) {
@@ -145,6 +162,20 @@ export class AppComponent implements AfterViewInit {
                 obj.mode = mode;
             }
             await this.event.render();
+        }
+
+        obj.build = async (top: any, bottom: any) => {
+            obj.top = [];
+            obj.bottom = [];
+
+            for (let i = 0; i < top.length; i++)
+                obj.top.push(top[i]);
+
+            if (bottom)
+                for (let i = 0; i < bottom.length; i++)
+                    obj.bottom.push(bottom[i]);
+
+            await this.ref.detectChanges();
         }
 
         return obj;
