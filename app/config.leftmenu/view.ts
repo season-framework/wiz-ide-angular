@@ -16,7 +16,8 @@ export class Component implements OnInit {
             { name: 'Component', id: 'component', icon: 'fa-solid fa-cubes' },
             { name: 'Service', id: 'service', icon: 'fa-solid fa-hammer' },
             { name: 'Styles', id: 'styles', icon: 'fa-brands fa-css3-alt' },
-            { name: 'Assets', id: 'assets', icon: 'fa-solid fa-images' }
+            { name: 'Assets', id: 'assets', icon: 'fa-solid fa-images' },
+            { name: 'Custom Packages', id: 'libs', icon: 'fa-solid fa-boxes-packing' }
         ], [
             { name: 'Route API', id: 'route', icon: 'fa-solid fa-link' },
             { name: 'Model', id: 'model', icon: 'fa-solid fa-database' },

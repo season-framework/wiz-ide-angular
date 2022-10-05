@@ -20,6 +20,7 @@ def update(segment):
     code = wiz.request.query("code", True)
     fs = workspace.fs("src")
     fs.write(path, code)
+    wiz.server.socket.bind()
     wiz.response.status(200)
 
 def build(segment):
