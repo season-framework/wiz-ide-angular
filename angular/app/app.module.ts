@@ -7,6 +7,7 @@ import { NuMonacoEditorModule } from '@ng-util/monaco-editor';
 import { KeyboardShortcutsModule } from 'ng-keyboard-shortcuts';
 import { NgxLoadingModule, ngxLoadingAnimationTypes } from "ngx-loading";
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { SortablejsModule } from '@wiz/libs/ngx-sortablejs';
 
 @NgModule({
     declarations: [
@@ -23,6 +24,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
             secondaryColour: "#3843D0",
             tertiaryColour: "#3843D0",
         }),
+        SortablejsModule,
         KeyboardShortcutsModule.forRoot(),
         NgbModule,
         '@wiz.imports'

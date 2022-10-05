@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import { Component, AfterViewInit, ChangeDetectorRef } from '@angular/core';
+import { Router, Component, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import EditorManager from '@wiz/service/editor';
 
@@ -226,6 +226,12 @@ export class AppComponent implements AfterViewInit {
 
         socket.on("log", async (data) => {
             this.scope.log(data, "server");
+        });
+
+        window.addEventListener("beforeunload", function (e) {
+            var confirmationMessage = "\o/";
+            e.returnValue = confirmationMessage;
+            return confirmationMessage;
         });
     }
 

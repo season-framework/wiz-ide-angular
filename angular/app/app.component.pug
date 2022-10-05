@@ -41,7 +41,7 @@
             wiz-config-leftmenu([scope]="scope", [menu]="leftmenu", [binding]="binding")
 
         .workspace-editor
-            .editor-list
+            .editor-list([sortablejs]="editorManager.editable", [sortablejsOptions]="{ animation: 150, handle: '.editor-header' }")
                 .editor-body(*ngFor="let item of editorManager.editable", [ngClass]="editorManager.activated && item.id == editorManager.activated.id ? 'active' : ''", (click)="item.activate()")
                     .editor-header 
                         .header-text
@@ -57,6 +57,7 @@
                         a.btn.btn-square.btn-sm.p-2(*ngFor="let tab of item.tabs; index as idx", (click)="item.select(idx)", [ngClass]="idx == item.current ? 'btn-white' : 'btn-primary'") {{tab.name}}
                         
                     .editor-container(*ngIf="item.tab()")
+                        .editor-overlay
                         wiz-core-editor([scope]="scope", [editor]="item")
 
             .editor-minified(*ngIf="editorManager.minified.length > 0")
