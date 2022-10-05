@@ -24,7 +24,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
             tertiaryColour: "#3843D0",
         }),
         KeyboardShortcutsModule.forRoot(),
-        NgbModule
+        NgbModule,
+        '@wiz.imports'
     ],
     providers: [],
     bootstrap: [AppComponent]

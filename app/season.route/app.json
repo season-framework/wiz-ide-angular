@@ -1,8 +1,0 @@
-{
-    "id": "core.leftmenu.route",
-    "ng.build": {
-        "id": "season.route",
-        "name": "SeasonRouteComponent",
-        "path": "./season.route/season.route.component"
-    }
-}

@@ -136,12 +136,15 @@ export class AppComponent implements AfterViewInit {
         obj.mode = 'branch';
         obj.top = [];
         obj.bottom = [];
+        obj.width = 360;
 
-        obj.toggle = async (mode) => {
-            if (obj.mode == mode) {
+        obj.toggle = async (item) => {
+            if (obj.mode == item.id) {
                 obj.mode = null;
             } else {
-                obj.mode = mode;
+                obj.mode = item.id;
+                if (item.width) obj.width = item.width;
+                else obj.width = 360;
             }
             await this.scope.render();
         }
@@ -174,14 +177,6 @@ export class AppComponent implements AfterViewInit {
             let current_app = this.editorManager.activated;
             if (!current_app) return;
             await current_app.update();
-        }
-
-        obj.remove = async (item: any) => {
-            if (!item) item = this.editorManager.activated;
-            if (!item) return;
-            let res = await this.alert.show({ title: 'Delete App', message: 'Are you sure remove "' + item.path + '"?', action_text: "Delete", action_class: "btn-danger" });
-            if (res !== true) return;
-            await item.delete();
         }
 
         obj.log = async (value: any, tag = "ide") => {

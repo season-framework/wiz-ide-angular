@@ -1,0 +1,7 @@
+{
+    "ng.build": {
+        "id": "core.files",
+        "name": "CoreFilesComponent",
+        "path": "./core.files/core.files.component"
+    }
+}

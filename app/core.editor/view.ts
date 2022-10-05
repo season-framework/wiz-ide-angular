@@ -3,20 +3,18 @@ import { AfterViewInit, Input, ViewChild, ViewContainerRef, ComponentFactoryReso
 export class Component implements AfterViewInit {
     @ViewChild('container', { read: ViewContainerRef }) container: ViewContainerRef;
     @Input() scope;
-    @Input() item;
-    @Input() tab;
+    @Input() editor;
 
     constructor(private componentFactoryResolver: ComponentFactoryResolver) {
     }
 
     public async ngAfterViewInit() {
-        let componentClass = this.tab.viewref;
+        let componentClass = this.editor.tab().viewref;
         if (!componentClass) return;
         const componentFactory = this.componentFactoryResolver.resolveComponentFactory(componentClass);
         const component = this.container.createComponent(componentFactory);
         component.instance.scope = this.scope;
-        component.instance.item = this.item;
-        component.instance.tab = this.tab;
+        component.instance.editor = this.editor;
         await this.scope.render();
     }
 }

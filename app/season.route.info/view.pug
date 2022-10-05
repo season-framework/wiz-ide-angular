@@ -32,14 +32,18 @@
             .col
                 input.form-control.form-control-sm(type="text" placeholder="/main", [(ngModel)]="data.viewuri")
 
-        .form-group.row(*ngIf="item.path")
-            .col-3
-                label.form-label.col-form-label Delete Route
-            .col
-                button.btn.btn-outline-red.btn-block((click)="item.delete()") Delete
+        hr
 
-        .form-group.row(*ngIf="!item.path")
-            .col-3
-                label.form-label.col-form-label Create Route
+        .form-group.row(*ngIf="editor.path")
             .col
-                button.btn.btn-outline-blue.btn-block((click)="item.update()") Create
+                button.btn.btn-outline-blue.btn-block((click)="editor.update()") Update
+
+        .form-group.row(*ngIf="editor.path")
+            .col
+                button.btn.btn-outline-red.btn-block((click)="editor.delete()") Delete
+
+        .form-group.row(*ngIf="!editor.path")
+            .col
+                button.btn.btn-outline-blue.btn-block((click)="editor.update()") Create
+
+    ngx-loading([show]="loading")

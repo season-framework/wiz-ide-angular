@@ -4,7 +4,7 @@
             .browser-category
                 span Angular
             
-            .browser-info(*ngFor="let item of app.data", (click)="app.open(item)", [ngClass]="editor.activated && item.path == editor.activated.path ? 'active' : ''")
+            .browser-info(*ngFor="let item of items", (click)="open(item)", [ngClass]="active(item)")
                 .avatar-area.avatar-area-sm.mr-3
                     .avatar-container
                         i.fa-brands.fa-angular

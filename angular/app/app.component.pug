@@ -57,19 +57,19 @@
                         a.btn.btn-square.btn-sm.p-2(*ngFor="let tab of item.tabs; index as idx", (click)="item.select(idx)", [ngClass]="idx == item.current ? 'btn-white' : 'btn-primary'") {{tab.name}}
                         
                     .editor-container(*ngIf="item.tab()")
-                        wiz-core-editor([scope]="scope", [item]="item", [tab]="item.tab()")
+                        wiz-core-editor([scope]="scope", [editor]="item")
 
             .editor-minified(*ngIf="editorManager.minified.length > 0")
                 .minified-padding
                 .minified-item(*ngFor="let item of editorManager.minified", (click)="item.activate()") 
                     span {{item.title}}
 
-        .workspace-rightapp(*ngIf="rightmenu.mode")
+        .workspace-rightapp(*ngIf="rightmenu.mode", style="width: {{ rightmenu.width }}px;")
             wiz-config-rightmenu([scope]="scope", [menu]="rightmenu", [binding]="binding")
 
         .workspace-rightmenu
             .d-block(*ngFor="let item of rightmenu.top")
-                .btn((click)="rightmenu.toggle(item.id)", [ngClass]="rightmenu.mode == item.id ? 'active' : ''")
+                .btn((click)="rightmenu.toggle(item)", [ngClass]="rightmenu.mode == item.id ? 'active' : ''")
                     i(class="{{ item.icon }}")
                     .hover-area
                         span {{ item.name }}
@@ -77,7 +77,7 @@
                             i(class="{{ item.icon }}")
             .mt-auto
             .d-block(*ngFor="let item of rightmenu.bottom")
-                .btn((click)="rightmenu.toggle(item.id)", [ngClass]="rightmenu.mode == item.id ? 'active' : ''")
+                .btn((click)="rightmenu.toggle(item)", [ngClass]="rightmenu.mode == item.id ? 'active' : ''")
                     i(class="{{ item.icon }}")
                     .hover-area
                         span {{ item.name }}

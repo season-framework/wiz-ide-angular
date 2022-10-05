@@ -4,8 +4,8 @@
             span PIP Packages
 
     .side-search.area-round
-        input.form-control(type="text" placeholder="eg) requests", [(ngModel)]="package.keyword", (keyup.enter)="package.install(package.keyword)")
-        button.btn.btn-primary.ms-2((click)="package.install(package.keyword)") Install
+        input.form-control(type="text" placeholder="eg) requests", [(ngModel)]="keyword", (keyup.enter)="install(keyword)")
+        button.btn.btn-primary.ms-2((click)="install(keyword)") Install
 
     .side-body.area-round
         table.table.table-hover
@@ -14,12 +14,12 @@
                 th.text-center Version
                 th.text-center.w-1
             tbody
-                tr(*ngFor="let item of package.data")
-                    ng-container(*ngIf="package.match(item.name)")
+                tr(*ngFor="let item of data")
+                    ng-container(*ngIf="match(item.name)")
                         th {{item.name}}
                         td {{item.version}}
                         td.w-1.nowrap
-                            button.btn.btn-sm.btn-dark.me-1((click)="package.install(item.name)")
+                            button.btn.btn-sm.btn-dark.me-1((click)="install(item.name)")
                                 i.fa-solid.fa-arrow-up
 
     ngx-loading([show]="loading")

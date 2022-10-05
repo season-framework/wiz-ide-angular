@@ -3,6 +3,7 @@ import { OnInit, Input } from '@angular/core';
 import toastr from "toastr";
 
 import InfoEditor from "@wiz/app/ng.app.info";
+import PageInfoEditor from "@wiz/app/ng.app.info.page";
 import MonacoEditor from "@wiz/app/season.monaco";
 
 toastr.options = {
@@ -31,11 +32,15 @@ export class Component implements OnInit {
     public keyword: string = "";
     public categories: Array<string> = [];
     public apps: any = {};
+    public infoEditorClass: any;
 
     constructor(private editorManager: EditorManager) {
     }
 
     public async ngOnInit() {
+        if (this.mode == 'page') this.infoEditorClass = PageInfoEditor;
+        else this.infoEditorClass = InfoEditor;
+
         await this.load();
     }
 
@@ -47,12 +52,17 @@ export class Component implements OnInit {
         return 'active';
     }
 
-    public async match(item: EditorManager.Editor) {
-        if (item.title.toLowerCase().indexOf(this.keyword.toLowerCase()) >= 0) {
-            return true;
-        }
-        if (item.subtitle.toLowerCase().indexOf(this.keyword.toLowerCase()) >= 0) {
-            return true;
+    public match(item: EditorManager.Editor) {
+        if (!this.keyword) return true;
+        if (item.title)
+            if (item.title.toLowerCase().indexOf(this.keyword.toLowerCase()) >= 0)
+                return true;
+
+        if (item.subtitle) {
+            let target = item.title.toLowerCase().substring(this.mode.length);
+            if (target.toLowerCase().indexOf(this.keyword.toLowerCase()) >= 0) {
+                return true;
+            }
         }
         return false;
     }
@@ -96,7 +106,7 @@ export class Component implements OnInit {
         let editor = this.editorManager.create({ component_id: this.APP_ID, title: 'New' });
 
         // create tab
-        editor.create({ name: 'info', viewref: InfoEditor })
+        editor.create({ name: 'info', viewref: this.infoEditorClass })
             .bind('data', async (tab) => {
                 return { mode: this.mode, id: '', title: '', namespace: '', viewuri: '', category: '' };
             }).bind('update', async (tab) => {
@@ -119,7 +129,6 @@ export class Component implements OnInit {
             });
 
         await editor.open();
-        await editor.activate();
     }
 
     public async open(app: any, location: number = -1) {
@@ -138,7 +147,7 @@ export class Component implements OnInit {
         // create tab
         editor.create({
             name: 'info',
-            viewref: InfoEditor,
+            viewref: this.infoEditorClass,
             path: apppath + "/app.json"
         }).bind('data', async (tab) => {
             let { code, data } = await wiz.call('data', { path: tab.path });
@@ -200,19 +209,13 @@ export class Component implements OnInit {
                 viewref: MonacoEditor,
                 path: apppath + "/view.scss",
                 config: { monaco: { language: 'scss' } }
-            })
-        ];
-
-        if (mode == 'page') {
-            tabs.push(editor.create({
+            }),
+            editor.create({
                 name: 'Service',
                 viewref: MonacoEditor,
                 path: apppath + "/service.ts",
                 config: { monaco: { language: 'typescript', renderValidationDecorations: 'off' } }
-            }))
-        }
-
-        tabs.push(
+            }),
             editor.create({
                 name: 'API',
                 viewref: MonacoEditor,
@@ -225,7 +228,7 @@ export class Component implements OnInit {
                 path: apppath + "/socket.py",
                 config: { monaco: { language: 'python' } }
             })
-        );
+        ];
 
         // bind event to monaco editor tabs
         for (let i = 0; i < tabs.length; i++) {
@@ -242,6 +245,9 @@ export class Component implements OnInit {
 
         // bind editor delete event
         editor.bind("delete", async () => {
+            let res = await this.scope.alert.show({ title: 'Delete App', message: 'Are you sure remove "' + editor.title + '"?', action_text: "Delete", action_class: "btn-danger" });
+            if (res !== true) return;
+
             let targets = await this.editorManager.find(editor);
             for (let i = 0; i < targets.length; i++)
                 await targets[i].close();
@@ -256,7 +262,6 @@ export class Component implements OnInit {
         });
 
         await editor.open(location);
-        await editor.activate();
     }
 
 }

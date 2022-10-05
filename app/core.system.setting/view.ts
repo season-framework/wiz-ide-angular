@@ -1,6 +1,26 @@
+import EditorManager from '@wiz/service/editor';
 import { OnInit, Input } from '@angular/core';
+import toastr from "toastr";
 import MonacoEditor from "@wiz/app/season.monaco";
-import Editor from '@wiz/service/editor';
+
+toastr.options = {
+    "closeButton": false,
+    "debug": false,
+    "newestOnTop": true,
+    "progressBar": false,
+    "positionClass": "toast-bottom-right",
+    "preventDuplicates": true,
+    "onclick": null,
+    "showDuration": 300,
+    "hideDuration": 500,
+    "timeOut": 1500,
+    "extendedTimeOut": 1000,
+    "showEasing": "swing",
+    "hideEasing": "linear",
+    "showMethod": "fadeIn",
+    "hideMethod": "fadeOut"
+};
+
 
 export class Component implements OnInit {
     @Input() scope: any;
@@ -8,41 +28,41 @@ export class Component implements OnInit {
     public APP_ID: string = wiz.namespace;
     public item: any = null;
 
-    constructor(private editor: Editor) {
+    constructor(private editorManager: EditorManager) {
     }
 
     public async ngOnInit() {
     }
 
-    public async open(path) {
-        // let { code, data } = await wiz.call("load", { path: path + ".py" });
-        // this.editor.setData(path, data);
+    private async update(path: string, data: string) {
+        let res = await wiz.call('update', { path: path, code: data });
+        if (res.code == 200) toastr.success("Updated");
+    }
 
-        // let monacoConfig: any = {
-        //     language: 'python',
-        //     wordWrap: true,
-        //     roundedSelection: false,
-        //     scrollBeyondLastLine: false,
-        //     glyphMargin: false,
-        //     folding: true,
-        //     fontSize: 14,
-        //     automaticLayout: true,
-        //     minimap: { enabled: false }
-        // }
+    public async open(name) {
+        let editor = this.editorManager.create({
+            component_id: this.APP_ID,
+            path: "/config/" + name + ".py",
+            title: name,
+            unique: true,
+            current: 0
+        });
 
-        // let item = {
-        //     app_id: this.APP_ID,
-        //     title: 'System Setting',
-        //     subtitle: path,
-        //     current: 0,
-        //     path: "/config/" + path + ".py",
-        //     unique: true,
-        //     tabs: [
-        //         { name: "code", path: "/config/" + path + ".py", viewref: MonacoEditor, config: { ...monacoConfig } }
-        //     ]
-        // };
+        editor.create({
+            name: 'config',
+            viewref: MonacoEditor,
+            path: "/config/" + name + ".py",
+            config: { monaco: { language: 'python' } }
+        }).bind('data', async (tab) => {
+            let { code, data } = await wiz.call('load', { path: name + ".py" });
+            if (code != 200) return {};
+            return { data };
+        }).bind('update', async (tab) => {
+            let data = await tab.data();
+            await this.update(name + ".py", data.data);
+        });
 
-        // this.editor.open(item);
+        await editor.open();
     }
 
 }

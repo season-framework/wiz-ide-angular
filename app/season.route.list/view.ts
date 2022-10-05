@@ -26,7 +26,7 @@ toastr.options = {
 export class Component implements OnInit {
     @Input() scope: any;
 
-    APP_ID: string = wiz.namespace;
+    public APP_ID: string = wiz.namespace;
     public keyword: string = "";
     public categories: Array<string> = [];
     public routes: any = {};
@@ -46,11 +46,12 @@ export class Component implements OnInit {
         return 'active';
     }
 
-    public async match(item: EditorManager.Editor) {
-        if (item.title.toLowerCase().indexOf(this.keyword.toLowerCase()) >= 0) {
+    public match(item: EditorManager.Editor) {
+        if (!this.keyword) return true;
+        if (item.title && item.title.toLowerCase().indexOf(this.keyword.toLowerCase()) >= 0) {
             return true;
         }
-        if (item.subtitle.toLowerCase().indexOf(this.keyword.toLowerCase()) >= 0) {
+        if (item.subtitle && item.subtitle.toLowerCase().indexOf(this.keyword.toLowerCase()) >= 0) {
             return true;
         }
         return false;
@@ -114,7 +115,6 @@ export class Component implements OnInit {
             });
 
         await editor.open();
-        await editor.activate();
     }
 
     public async open(app: any, location: number = -1) {
@@ -125,6 +125,7 @@ export class Component implements OnInit {
             path: routepath,
             title: app.title ? app.title : app.id,
             subtitle: app.route,
+            unique: true,
             current: 1
         });
 
@@ -189,6 +190,9 @@ export class Component implements OnInit {
         });
 
         editor.bind("delete", async () => {
+            let res = await this.scope.alert.show({ title: 'Delete Route', message: 'Are you sure remove "' + editor.route + '"?', action_text: "Delete", action_class: "btn-danger" });
+            if (res !== true) return;
+
             let targets = await this.editorManager.find(editor);
             for (let i = 0; i < targets.length; i++)
                 await targets[i].close();
@@ -197,7 +201,6 @@ export class Component implements OnInit {
         });
 
         await editor.open(location);
-        await editor.activate();
     }
 
 }

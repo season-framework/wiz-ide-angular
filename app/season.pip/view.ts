@@ -23,50 +23,41 @@ export class Component implements OnInit {
     @Input() scope: any;
 
     public APP_ID: string = wiz.namespace;
+    public data: any = [];
+    public keyword: string = "";
     public loading: boolean = false;
+
+    public async ngOnInit() {
+        await this.load();
+    }
+
     public async loader(status) {
         this.loading = status;
         await this.scope.render();
     }
 
-    constructor() {
+    public match(value: string) {
+        if (value.indexOf(this.keyword) >= 0)
+            return true;
+        return false;
     }
 
-    public async ngOnInit() {
-        await this.package.load();
+    public async install(keyword: string) {
+        if (!keyword) return;
+        await this.loader(true);
+        let { data } = await wiz.call("install", { package: keyword });
+        this.scope.log(data);
+        await this.load();
+        await this.loader(false);
     }
 
-    package = (() => {
-        let obj: any = {};
-
-        obj.data = [];
-        obj.keyword = "";
-
-        obj.match = (value: string) => {
-            if (value.indexOf(obj.keyword) >= 0) {
-                return true;
-            }
-            return false;
-        }
-
-        obj.install = async (keyword) => {
-            await this.loader(true);
-            let { code, data } = await wiz.call("install", { package: keyword });
-            this.scope.log(data);
-            await this.package.load();
-            await this.loader(false);
-        }
-
-        obj.load = async () => {
-            await this.loader(true);
-            try {
-                let { code, data } = await wiz.call("list");
-                obj.data = data;
-            } catch (e) {
-            }
-            await this.loader(false);
-        }
-
-        return obj;
-    })();
+    public async load() {
+        await this.loader(true);
+        let { data } = await wiz.call("list");
+        data.sort((a, b) => {
+            return a.name.localeCompare(b.name);
+        });
+        this.data = data;
+        await this.loader(false);
+    }
 }

@@ -45,6 +45,10 @@ export class EditorTab {
         let location = this.editor.manager.tabcached[this.path].indexOf(this);
         if (location < 0) return;
         this.editor.manager.tabcached[this.path].splice(location, 1);
+
+        if (this.editor.manager.tabcached[this.path].length == 0) {
+            delete this.editor.manager.files[this.path];
+        }
     }
 
     public event: any = {};
@@ -202,7 +206,6 @@ export class Editor {
 
             if (selected) {
                 await selected.activate();
-                await manager.scope.render();
                 return;
             }
 
@@ -215,7 +218,7 @@ export class Editor {
             }
 
             if (selected) {
-                selected.activate();
+                await selected.activate();
                 return;
             }
         }
@@ -226,7 +229,7 @@ export class Editor {
             manager.editable.push(this);
         }
 
-        await manager.scope.render();
+        await this.activate();
     }
 
     public async close() {

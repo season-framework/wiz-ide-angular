@@ -1,5 +1,4 @@
-import { OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { DomSanitizer } from '@angular/platform-browser';
+import { OnInit, Input } from '@angular/core';
 import toastr from "toastr";
 
 toastr.options = {
@@ -22,15 +21,12 @@ toastr.options = {
 
 export class Component implements OnInit {
     @Input() scope: any;
-    @Output() binding = new EventEmitter<any>();
+    @Input() title: string = "Files";
 
     public APP_ID: string = wiz.namespace;
     public loading: boolean = false;
-    public url: string = "/";
-    public urlSafe: string;
 
-    constructor(private sanitizer: DomSanitizer) {
-        this.urlSafe = sanitizer.bypassSecurityTrustResourceUrl("/");
+    constructor() {
     }
 
     public async loader(status) {
@@ -39,16 +35,6 @@ export class Component implements OnInit {
     }
 
     public async ngOnInit() {
-        let id = this.APP_ID;
-        let data = this;
-        this.binding.emit({ id, data });
+        
     }
-
-    public async move(url: string) {
-        if (url[0] != "/") url = "/" + url;
-        this.url = url;
-        this.urlSafe = this.sanitizer.bypassSecurityTrustResourceUrl(url);
-        await this.scope.render();
-    }
-
 }

@@ -17,8 +17,8 @@ export class Component implements OnInit {
             { name: 'PIP Pacakge', id: 'pip', icon: 'fa-brands fa-python' },
             { name: 'Config', id: 'config', icon: 'fa-solid fa-cog' }
         ], [
-            { name: 'System Setting', id: 'system.setting', icon: 'fa-solid fa-wrench' },
-            { name: 'System Status', id: 'system.status', icon: 'fa-solid fa-heart-pulse' }
+            { name: 'System Setting', id: 'system.setting', icon: 'fa-solid fa-wrench', width: 280 },
+            { name: 'System Status', id: 'system.status', icon: 'fa-solid fa-heart-pulse', width: 280 }
         ]);
     }
 }
