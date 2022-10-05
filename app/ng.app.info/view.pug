@@ -1,0 +1,39 @@
+.editor-info
+    .editor-info-container.area-round
+        h3 App Info
+
+        .form-group.row
+            .col-3
+                label.form-label.col-form-label Title
+            .col
+                input.form-control.form-control-sm(type="text" placeholder="App Title", [(ngModel)]="data.title")
+        
+        .form-group.row
+            .col-3
+                label.form-label.col-form-label Namespace
+            .col
+                input.form-control.form-control-sm(type="text" placeholder="auth.login", [(ngModel)]="data.namespace")
+
+        .form-group.row
+            .col-3
+                label.form-label.col-form-label Category
+            .col
+                input.form-control.form-control-sm(type="text" placeholder="general", [(ngModel)]="data.category")
+
+        .form-group.row
+            .col-3
+                label.form-label.col-form-label Preview URL
+            .col
+                input.form-control.form-control-sm(type="text" placeholder="/main", [(ngModel)]="data.viewuri")
+
+        .form-group.row(*ngIf="item.path")
+            .col-3
+                label.form-label.col-form-label Delete App
+            .col
+                button.btn.btn-outline-red.btn-block((click)="item.delete()") Delete
+
+        .form-group.row(*ngIf="!item.path")
+            .col-3
+                label.form-label.col-form-label Create App
+            .col
+                button.btn.btn-outline-blue.btn-block((click)="item.update()") Create

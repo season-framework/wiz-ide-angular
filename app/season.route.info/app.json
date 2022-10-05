@@ -1,0 +1,7 @@
+{
+    "ng.build": {
+        "id": "season.route.info",
+        "name": "SeasonRouteInfoComponent",
+        "path": "./season.route.info/season.route.info.component"
+    }
+}

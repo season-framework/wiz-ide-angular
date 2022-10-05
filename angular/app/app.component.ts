@@ -1,12 +1,9 @@
 import $ from 'jquery';
 import { Component, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import Editor from '@wiz/service/editor';
+import EditorManager from '@wiz/service/editor';
 
-import { CoreViewAlertComponent } from "@wiz/app/core.view.alert";
-
-import { NuMonacoEditorEvent } from '@ng-util/monaco-editor';
-import { KeyMod, KeyCode } from 'monaco-editor';
+import AlertComponent from "@wiz/app/core.alert";
 import toastr from "toastr";
 
 toastr.options = {
@@ -34,7 +31,7 @@ toastr.options = {
 })
 export class AppComponent implements AfterViewInit {
 
-    constructor(private editor: Editor, private ref: ChangeDetectorRef, public modalService: NgbModal) {
+    constructor(private editorManager: EditorManager, private ref: ChangeDetectorRef, public modalService: NgbModal) {
     }
 
     public alert: any = (() => {
@@ -48,7 +45,7 @@ export class AppComponent implements AfterViewInit {
                 if (!action_class) action_class = "btn-primary";
                 if (!action_text) action_text = "Confirm";
 
-                const modalRef = this.modalService.open(CoreViewAlertComponent, { size: 'sm' });
+                const modalRef = this.modalService.open(AlertComponent, { size: 'sm' });
                 modalRef.componentInstance.title = title;
                 modalRef.componentInstance.message = message;
                 modalRef.componentInstance.action_text = action_text;
@@ -101,21 +98,6 @@ export class AppComponent implements AfterViewInit {
         return obj;
     })();
 
-    public init: any = (() => {
-        let obj: any = {};
-
-        obj.editor = async (item: any, e: NuMonacoEditorEvent) => {
-            for (let i = 0; i < this.shortcuts.length; i++) {
-                let shortcut = this.shortcuts[i];
-                e.editor.addCommand(shortcut.monaco, shortcut.command);
-            }
-            item.editor = e.editor;
-            item.editor.focus();
-        }
-
-        return obj;
-    })();
-
     public leftmenu: any = (() => {
         let obj: any = {};
 
@@ -129,7 +111,7 @@ export class AppComponent implements AfterViewInit {
             } else {
                 obj.mode = mode;
             }
-            await this.event.render();
+            await this.scope.render();
         }
 
         obj.build = async (top: any, bottom: any) => {
@@ -151,7 +133,7 @@ export class AppComponent implements AfterViewInit {
     public rightmenu: any = (() => {
         let obj: any = {};
 
-        obj.mode = 'preview';
+        obj.mode = 'branch';
         obj.top = [];
         obj.bottom = [];
 
@@ -161,7 +143,7 @@ export class AppComponent implements AfterViewInit {
             } else {
                 obj.mode = mode;
             }
-            await this.event.render();
+            await this.scope.render();
         }
 
         obj.build = async (top: any, bottom: any) => {
@@ -181,7 +163,7 @@ export class AppComponent implements AfterViewInit {
         return obj;
     })();
 
-    public event: any = (() => {
+    public scope: any = (() => {
         let obj: any = {};
 
         obj.render = async () => {
@@ -189,17 +171,17 @@ export class AppComponent implements AfterViewInit {
         }
 
         obj.update = async () => {
-            let current_app = this.editor.activated;
+            let current_app = this.editorManager.activated;
             if (!current_app) return;
-            await this.editor.update(current_app);
+            await current_app.update();
         }
 
         obj.remove = async (item: any) => {
-            if (!item) item = this.editor.activated;
+            if (!item) item = this.editorManager.activated;
             if (!item) return;
             let res = await this.alert.show({ title: 'Delete App', message: 'Are you sure remove "' + item.path + '"?', action_text: "Delete", action_class: "btn-danger" });
             if (res !== true) return;
-            await this.editor.remove(item);
+            await item.delete();
         }
 
         obj.log = async (value: any, tag = "ide") => {
@@ -235,74 +217,11 @@ export class AppComponent implements AfterViewInit {
         obj.binding = this.binding;
         obj.alert = this.alert;
 
-        this.editor.bind(obj);
+        this.editorManager.bind(obj);
         return obj;
     })();
 
-    public shortcuts: any = [];
-
     public async ngAfterViewInit() {
-        // bind shortcuts
-        this.shortcuts.push({
-            key: ["cmd + s", "ctrl + s"],
-            monaco: KeyMod.CtrlCmd | KeyCode.KeyS,
-            preventDefault: true,
-            command: async () => {
-                await this.event.update();
-            }
-        }, {
-            key: ["alt + a"],
-            monaco: KeyMod.Alt | KeyCode.KeyA,
-            preventDefault: true,
-            command: async () => {
-                if (!this.editor.activated) return;
-                let target = this.editor.activated;
-                let current = target.current;
-                if (target.tabs[current - 1]) {
-                    target.current = target.current - 1;
-                } else {
-                    target.current = target.tabs.length - 1;
-                }
-                await this.event.render();
-            }
-        }, {
-            key: ["alt + s"],
-            monaco: KeyMod.Alt | KeyCode.KeyS,
-            preventDefault: true,
-            command: async () => {
-                if (!this.editor.activated) return;
-                let target = this.editor.activated;
-                let current = target.current;
-                if (target.tabs[current + 1]) {
-                    target.current = target.current + 1;
-                } else {
-                    target.current = 0;
-                }
-                await this.event.render();
-            }
-        }, {
-            key: ["alt + w"],
-            monaco: KeyMod.Alt | KeyCode.KeyW,
-            preventDefault: true,
-            command: async () => {
-                await this.editor.close(this.editor.activated);
-            }
-        }, {
-            key: ["alt + t"],
-            monaco: KeyMod.Alt | KeyCode.KeyT,
-            preventDefault: true,
-            command: async () => {
-                if (!this.editor.activated) return;
-                let target = this.editor.activated;
-                let location = this.editor.data.indexOf(target);
-                let item = { ...target };
-                item.editor_id = "editor-" + new Date().getTime();
-                this.editor.data.splice(location, 0, item);
-                await this.editor.active(this.editor.data[location + 1]);
-                await this.event.render();
-            }
-        });
-
         // bind socket
         let socket = wiz.socket();
 
@@ -311,9 +230,8 @@ export class AppComponent implements AfterViewInit {
         });
 
         socket.on("log", async (data) => {
-            this.event.log(data, "server");
+            this.scope.log(data, "server");
         });
-
     }
 
 }

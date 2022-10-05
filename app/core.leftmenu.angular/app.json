@@ -1,7 +1,0 @@
-{
-    "ng.build": {
-        "id": "core.leftmenu.angular",
-        "name": "CoreLeftmenuAngularComponent",
-        "path": "./core.leftmenu.angular/core.leftmenu.angular.component"
-    }
-}

@@ -1,0 +1,7 @@
+{
+    "ng.build": {
+        "id": "core.alert",
+        "name": "CoreAlertComponent",
+        "path": "./core.alert/core.alert.component"
+    }
+}

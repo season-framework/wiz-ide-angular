@@ -1,0 +1,7 @@
+{
+    "ng.build": {
+        "id": "season.monaco",
+        "name": "SeasonMonacoComponent",
+        "path": "./season.monaco/season.monaco.component"
+    }
+}

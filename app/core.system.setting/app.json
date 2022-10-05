@@ -1,0 +1,7 @@
+{
+    "ng.build": {
+        "id": "core.system.setting",
+        "name": "CoreSystemSettingComponent",
+        "path": "./core.system.setting/core.system.setting.component"
+    }
+}

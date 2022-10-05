@@ -1,0 +1,7 @@
+{
+    "ng.build": {
+        "id": "ng.angular",
+        "name": "NgAngularComponent",
+        "path": "./ng.angular/ng.angular.component"
+    }
+}

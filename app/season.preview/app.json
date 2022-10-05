@@ -1,0 +1,7 @@
+{
+    "ng.build": {
+        "id": "season.preview",
+        "name": "SeasonPreviewComponent",
+        "path": "./season.preview/season.preview.component"
+    }
+}

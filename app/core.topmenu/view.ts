@@ -21,7 +21,7 @@ toastr.options = {
 };
 
 export class Component implements OnInit {
-    @Input() event: any;
+    @Input() scope: any;
     public APP_ID: string = wiz.namespace;
 
     constructor(private editor: Editor) {
@@ -41,14 +41,14 @@ export class Component implements OnInit {
         obj.load = async () => {
             let { code, data } = await wiz.call("branches");
             obj.data = data;
-            await this.event.render();
+            await this.scope.render();
         }
 
         return obj;
     })();
 
     public async clean() {
-        await this.event.loading.show();
+        await this.scope.loading.show();
         try {
             let { code, data } = await wiz.call("clean");
             if (code == 200) {
@@ -60,7 +60,7 @@ export class Component implements OnInit {
             toastr.error("Error");
         }
 
-        await this.event.loading.hide();
+        await this.scope.loading.hide();
     }
 
 }

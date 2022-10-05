@@ -1,189 +1,332 @@
+export class EditorTab {
+    public editor: Editor;
+    public name: string;         // tab display name
+    public path: string;         // real file path
+    public viewref: any;         // class for render editor view
+    public updater: any;
+    public loader: any;
+    public cache: any = null;
+    public meta: any = {};
+
+    // configuration for editor view
+    public config: any = {
+        monaco: {
+            wordWrap: true,
+            roundedSelection: false,
+            scrollBeyondLastLine: false,
+            glyphMargin: false,
+            folding: true,
+            fontSize: 14,
+            automaticLayout: true,
+            minimap: { enabled: false }
+        }
+    };
+
+    constructor(editor: Editor, name: string, path: any, viewref: any, config: any = {}) {
+        if (!editor.manager.tabcached[path]) editor.manager.tabcached[path] = [];
+        editor.manager.tabcached[path].push(this);
+        this.editor = editor;
+        this.name = name;
+        this.path = path;
+        this.viewref = viewref;
+        for (let key in config) {
+            if (key == 'monaco') {
+                for (let mkey in config[key]) {
+                    this.config[key][mkey] = config[key][mkey];
+                }
+            } else {
+                this.config[key] = config[key];
+            }
+        }
+    }
+
+    public destroy() {
+        if (!this.editor.manager.tabcached[this.path]) return;
+        let location = this.editor.manager.tabcached[this.path].indexOf(this);
+        if (location < 0) return;
+        this.editor.manager.tabcached[this.path].splice(location, 1);
+    }
+
+    public event: any = {};
+
+    public bind(key: string, fn: any) {
+        this.event[key] = fn;
+        return this;
+    }
+
+    public async update() {
+        if (this.event.update) {
+            await this.event.update(this);
+            return;
+        }
+    }
+
+    public async data() {
+        // if path is not null
+        if (this.path)
+            if (this.editor.manager.files[this.path])
+                return this.editor.manager.files[this.path];
+
+        if (this.cache)
+            return this.cache;
+
+        // if event data binded
+        if (this.event.data) {
+            let data = await this.event.data(this);
+            if (this.path)
+                this.editor.manager.files[this.path] = data;
+            this.cache = data;
+            return data;
+        }
+
+        // default return cache
+        return this.cache;
+    }
+
+    public async move(to: string) {
+        let from = this.path + '';
+        if (from == to) return;
+
+        let data = this.editor.manager.files[from];
+        this.editor.manager.files[to] = data;
+        delete this.editor.manager.files[from];
+
+        this.path = to;
+        if (this.editor.manager.tabcached[from]) {
+            this.editor.manager.tabcached[to] = [];
+            for (let i = 0; i < this.editor.manager.tabcached[from].length; i++) {
+                this.editor.manager.tabcached[from][i].path = to;
+                this.editor.manager.tabcached[to].push(this.editor.manager.tabcached[from][i]);
+            }
+        }
+    }
+}
+
 export class Editor {
-    files: any = {};
-    minified: any = [];
-    data: any = [];
-    activated: any;
-    shortcuts: any = [];
-    event: any;
+    public id: string;                // editor instance id
+    public manager: Manager;         // wiz editor
+    public path: string;              // unique identifier for data
+    public title: string;             // title for display tab
+    public subtitle: string;          // subtitle for display tab
+    public current: number | null = 0;       // activated edit item
+    public tabs: Array<EditorTab> = []; // tabs
+    public unique: boolean = false;   // is unique tab
+    public component_id: string;
+    public meta: any = {};
 
-    public async bind(event: any) {
-        this.event = event;
+    constructor(manager: Manager, component_id: string, path: any = null, title: string = '', subtitle: string = '', current: number = 0, unique: boolean = false) {
+        this.id = "editor-" + new Date().getTime();
+        this.component_id = component_id;
+        this.manager = manager;
+        this.path = path;
+        this.title = title;
+        this.subtitle = subtitle;
+        this.current = current;
+        this.unique = unique;
     }
 
-    public async active(item: any) {
-        this.activated = item;
-        await this.event.render();
+    public event: any = { update: null, delete: null, clone: null };
+
+    public bind(key: string, fn: any) {
+        this.event[key] = fn;
+        return this;
     }
 
-    public async open(item: any) {
-        let tab = { ...item };
-        if (tab.unique) {
-            let selected = null;
-            for (let i = 0; i < this.data.length; i++) {
-                if (this.data[i].path == tab.path && tab.app_id == this.data[i].app_id) {
-                    selected = this.data[i];
+    public async update() {
+        let currentTab = this.tab();
+        if (currentTab)
+            await currentTab.update();
+    }
+
+    public async delete() {
+        if (this.event.delete)
+            await this.event.delete(...arguments);
+    }
+
+    public async clone() {
+        if (this.event.clone)
+            await this.event.clone(...arguments);
+    }
+
+    public create(params = {}) {
+        let config: any = { name: null, path: null, viewref: null, config: {} };
+        for (let key in params) config[key] = params[key];
+        let tab = new EditorTab(this, config.name, config.path, config.viewref, config.config);
+        this.tabs.push(tab);
+        return tab;
+    }
+
+    public modify(values: any = {}) {
+        let manager = this.manager;
+        let finded = manager.find(this);
+        for (let i = 0; i < finded.length; i++) {
+            if (values.path) finded[i].path = values.path;
+            if (values.title) finded[i].title = values.title;
+            if (values.subtitle) finded[i].subtitle = values.subtitle;
+            if (values.meta)
+                for (let key in values.meta)
+                    finded[i].meta[key] = values.meta[key];
+        }
+    }
+
+    // tab events
+    public tab(current: number | null = null) {
+        if (current !== null)
+            return this.tabs[current]
+        if (this.current !== null)
+            return this.tabs[this.current];
+        return null;
+    }
+
+    public async select(current: number) {
+        let manager = this.manager;
+        this.current = null;
+        await manager.scope.render();
+        this.current = current;
+        await manager.scope.render();
+    }
+
+    // editor events
+    public async open(location: number = -1) {
+        let manager = this.manager;
+
+        if (this.unique) {
+            // if manager is activated editors
+            let selected: Editor | null = null;
+            for (let i = 0; i < manager.editable.length; i++) {
+                if (manager.editable[i].path == this.path && manager.editable[i].component_id == this.component_id) {
+                    selected = manager.editable[i];
                     break;
                 }
             }
 
             if (selected) {
-                this.active(selected);
-                await this.event.render();
+                await selected.activate();
+                await manager.scope.render();
                 return;
             }
 
-            for (let i = 0; i < this.minified.length; i++) {
-                if (this.minified[i].path == tab.path && tab.app_id == this.minified[i].app_id) {
-                    selected = this.minified[i];
+            // if not in activated, find minified
+            for (let i = 0; i < manager.minified.length; i++) {
+                if (manager.minified[i].path == this.path && manager.minified[i].component_id == this.component_id) {
+                    selected = manager.minified[i];
                     break;
                 }
             }
 
             if (selected) {
-                this.reopen(selected);
+                selected.activate();
                 return;
             }
         }
 
-        tab.editor_id = "editor-" + new Date().getTime();
-        this.data.push(tab);
-        this.activated = tab;
-        await this.event.render();
+        if (location > -1) {
+            manager.editable.splice(location, 0, this)
+        } else {
+            manager.editable.push(this);
+        }
+
+        await manager.scope.render();
     }
 
-    public async close(item: any) {
-        let location = this.data.indexOf(item);
+    public async close() {
+        let manager = this.manager;
+        let location = manager.editable.indexOf(this);
         if (location >= 0) {
-            this.data.remove(item);
-            if (this.activated && item.editor_id == this.activated.editor_id) {
-                if (this.data[location]) {
-                    await this.active(this.data[location]);
-                } else if (this.data[location - 1]) {
-                    await this.active(this.data[location - 1]);
+            manager.editable.splice(location, 1);
+            if (manager.activated && this.id == manager.activated.id) {
+                if (manager.editable[location]) {
+                    await manager.editable[location].activate();
+                } else if (manager.editable[location - 1]) {
+                    await manager.editable[location - 1].activate();
                 } else {
-                    this.activated = null;
+                    manager.activated = null;
                 }
             }
         } else {
-            location = this.minified.indexOf(item);
+            location = manager.minified.indexOf(this);
             if (location >= 0) {
-                this.minified.remove(item);
+                manager.minified.splice(location, 1);
             }
         }
 
-        await this.event.render();
+        for (let i = 0; i < this.tabs.length; i++)
+            this.tabs[i].destroy();
+
+        await manager.scope.render();
     }
 
-    public async load(item: any, current: number) {
-        item.current = current;
-        await this.event.render();
-    }
-
-    public async reopen(item: any) {
-        this.minified.remove(item);
-        this.data.push(item);
-        await this.event.render();
-    }
-
-    public async minify(item: any) {
-        this.data.remove(item);
-        this.minified.push(item);
-        await this.event.render();
-    }
-
-    // file data
-    public async setData(path: string, data: string) {
-        this.files[path] = data;
-        await this.event.render();
-    }
-
-    public async hasData(path: string) {
-        return this.files[path] ? true : false;
-    }
-
-    public async getData(path: string) {
-        return this.files[path];
-    }
-
-    public async deleteData(path: string) {
-        delete this.files[path];
-    }
-
-    // update trigger
-    public updater: any = {};
-
-    public async setUpdate(app_id: string, fn: any) {
-        this.updater[app_id] = fn;
-    }
-
-    public async update(item: any) {
-        let app_id = item.app_id;
-        if (!this.updater[app_id])
-            return;
-        await this.updater[app_id](item);
-    }
-
-    // remove trigger
-    public remover: any = {};
-
-    public async setRemove(app_id: string, fn: any) {
-        this.remover[app_id] = fn;
-    }
-
-    public async remove(item: any) {
-        let app_id = item.app_id;
-        if (!this.remover[app_id])
-            return;
-        await this.remover[app_id](item);
-    }
-
-    // replace trigger
-    public async replace(app_id: any, path: any, fn: any) {
-        for (let i = 0; i < this.data.length; i++) {
-            let obj = this.data[i];
-            if (obj.app_id != app_id) continue;
-            if (obj.path != path) continue;
-
-            let changed = await fn(obj);
-            if (changed)
-                this.data[i] = changed;
-
+    public async activate() {
+        let manager = this.manager;
+        let location = manager.minified.indexOf(this);
+        if (location > -1) {
+            manager.minified.splice(location, 1);
+            manager.editable.push(this);
         }
-
-        for (let i = 0; i < this.minified.length; i++) {
-            let obj = this.minified[i];
-            if (obj.app_id != app_id) continue;
-            if (obj.path != path) continue;
-
-            let changed = await fn(obj);
-            if (changed)
-                this.minified[i] = changed;
-
-        }
-
-        await this.event.render();
+        manager.activated = this;
+        await manager.scope.render();
     }
 
-    public async find(app_id: any, path: any) {
-        let res: any = [];
-
-        for (let i = 0; i < this.data.length; i++) {
-            let obj = this.data[i];
-            if (obj.app_id != app_id) continue;
-            if (obj.path != path) continue;
-            res.push(obj);
-        }
-
-        for (let i = 0; i < this.minified.length; i++) {
-            let obj = this.minified[i];
-            if (obj.app_id != app_id) continue;
-            if (obj.path != path) continue;
-            res.push(obj);
-        }
-
-        return res;
+    public async minify() {
+        let manager = this.manager;
+        let location = manager.editable.indexOf(this);
+        if (location > -1) manager.editable.splice(location, 1);
+        manager.minified.push(this);
+        await manager.scope.render();
     }
-
 }
 
-export default Editor;
+export class Manager {
+    Tab = EditorTab;
+    Editor = Editor;
+
+    scope: any;
+    tabcached: any = {};
+    files: any = {};
+    minified: Array<Editor> = [];
+    editable: Array<Editor> = [];
+    activated: Editor | null = null;
+
+    public async bind(scope: any) {
+        this.scope = scope;
+    }
+
+    public create(param = {}) {
+        let config = {
+            component_id: '',
+            path: null,
+            title: '',
+            subtitle: '',
+            current: 0,
+            unique: false
+        };
+
+        for (let key in param) config[key] = param[key];
+        return new Editor(this, config.component_id, config.path, config.title, config.subtitle, config.current, config.unique);
+    }
+
+    public find(item: Editor) {
+        let result: any = [];
+        for (let i = 0; i < this.editable.length; i++) {
+            let target = this.editable[i];
+            if (item.component_id == target.component_id && item.path == target.path) {
+                result.push(target);
+            }
+        }
+
+        for (let i = 0; i < this.minified.length; i++) {
+            let target = this.minified[i];
+            if (item.component_id == target.component_id && item.path == target.path) {
+                result.push(target);
+            }
+        }
+
+        return result;
+    }
+
+    public indexOf(item: Editor) {
+        return this.editable.indexOf(item);
+    }
+}
+
+export default Manager;

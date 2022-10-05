@@ -1,0 +1,7 @@
+{
+    "ng.build": {
+        "id": "config.shortcuts",
+        "name": "ConfigShortcutsComponent",
+        "path": "./config.shortcuts/config.shortcuts.component"
+    }
+}
