@@ -37,9 +37,52 @@
     flex: auto;
     width: 100%;
     overflow: auto;
-    padding: 0;
+    padding: 12px;
 
-    tr, td {
+    tr,
+    td {
         vertical-align: middle;
+    }
+}
+
+.file-tree {
+    .tree-icon {
+        width: 20px;
+        text-align: center;
+    }
+
+    .mat-tree-node {
+        cursor: pointer;
+
+        i.icon-action-always {
+            margin-left: 8px;
+            color: var(--wiz-color-blue);
+        }
+
+        i.icon-action {
+            display: none;
+            margin-left: 8px;
+        }
+
+        &:hover {
+            i.icon-action {
+                display: inline-block;
+                color: var(--wiz-color-gray);
+
+                &:hover {
+                    color: var(--wiz-color-blue);
+                }
+            }
+
+            color: var(--wiz-color-blue);
+            background: var(--wiz-color-blue-lt);
+        }
+    }
+
+    .form-control {
+        height: 20px !important;
+        font-size: 12px;
+        border-radius: 4px;
+        text-align: left;
     }
 }

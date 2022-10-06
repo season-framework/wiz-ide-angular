@@ -17,7 +17,8 @@
     --wiz-color-light: rgba(116, 108, 112, .1);
 }
 
-html, body {
+html,
+body {
     font-family: 'wiz-r';
     background-color: var(--wiz-color-background);
     width: 100%;
@@ -28,6 +29,17 @@ html, body {
 
 .fa-solid {
     font-weight: 900;
+}
+
+.cdk-overlay-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+.cdk-overlay-connected-position-bounding-box,
+.cdk-overlay-pane {
+    position: absolute;
 }
 
 @import "components/base";

@@ -1,41 +1,54 @@
-import subprocess
-import sys
+import os
 
-python_executable = str(sys.executable)
-if wiz.server.config.boot.python_executable is not None:
-    python_executable = wiz.server.config.boot.python_executable
-
-def install():
-    package = wiz.request.query("package", True)
-    output = subprocess.run([python_executable, "-m", "pip", "install", str(package), "--upgrade"], capture_output=True)
-    wiz.response.status(200, str(output.stdout.decode("utf-8")))
+workspace = wiz.workspace("service")
+fs = workspace.fs()
 
 def list(segment):
-    output = subprocess.run([python_executable, "-m", "pip", "freeze"], capture_output=True)
-    output = output.stdout.decode("utf-8")
-    output = output.split("\n")
-    installed = []
-    for i in range(len(output)):
-        if len(output[i]) == 0: continue
-        output[i] = output[i].split("==")
+    path = wiz.request.query("path", True)
+    if fs.isdir(path):
+        files = fs.files(path)
+        res = []
+        for name in files:
+            fpath = os.path.join(path, name)
+            ftype = 'file' if fs.isfile(fpath) else 'folder'
+            res.append(dict(name=name, path=fpath, type=ftype))
+        wiz.response.status(200, res)    
+    wiz.response.status(404, [])
 
-        if len(output[i]) > 1:
-            obj = dict()
-            obj['name'] = output[i][0]
-            try:
-                obj['version'] = output[i][1]
-            except:
-                pass
-            installed.append(obj)
-            continue
+def create():
+    path = wiz.request.query("path", True)
+    _type = wiz.request.query("type", True)
 
-        output[i] = output[i][0].split("@")
-        obj = dict()
-        obj['name'] = output[i][0]
-        try:
-            obj['version'] = 'file'
-        except:
-            pass
-        installed.append(obj)
+    if fs.exists(path):
+        wiz.response.status(401, False)
+    
+    try:
+        if _type == 'folder':
+            fs.makedirs(path)
+        else:
+            fs.write(path, "")
+    except:
+        wiz.response.status(500, False)
 
-    wiz.response.status(200, installed)
+    wiz.response.status(200, True)
+
+def delete():
+    path = wiz.request.query("path", True)
+    if len(path) == 0:
+        wiz.response.status(401, False)
+    if fs.exists(path):
+        fs.delete(path)
+    wiz.response.status(200, True)
+
+def move():
+    path = wiz.request.query("path", True)
+    to = wiz.request.query("to", True)
+    if len(path) == 0 or len(to) == 0:
+        wiz.response.status(401, False)
+    print(path, to)
+    if fs.exists(path) == False:
+        wiz.response.status(401, False)
+    if fs.exists(to):
+        wiz.response.status(401, False)
+    fs.move(path, to)
+    wiz.response.status(200, True)

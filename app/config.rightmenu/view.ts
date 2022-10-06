@@ -10,9 +10,9 @@ export class Component implements OnInit {
 
     public async ngOnInit() {
         this.menu.build([
-            { name: 'Preview', id: 'preview', icon: 'fa-solid fa-eye' },
-            { name: 'Branch', id: 'branch', icon: 'fa-solid fa-code-branch' },
+            { name: 'Project', id: 'project', icon: 'fa-solid fa-folder-tree' },
             { name: 'Commit', id: 'commit', icon: 'fa-solid fa-code-commit' },
+            { name: 'Preview', id: 'preview', icon: 'fa-solid fa-eye' },
             { name: 'NPM Package', id: 'npm', icon: 'fa-solid fa-boxes-packing' },
             { name: 'PIP Pacakge', id: 'pip', icon: 'fa-brands fa-python' },
             { name: 'Config', id: 'config', icon: 'fa-solid fa-cog' }

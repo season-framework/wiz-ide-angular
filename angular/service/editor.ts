@@ -1,3 +1,5 @@
+import { Injectable } from '@angular/core';
+
 export class EditorTab {
     public editor: Editor;
     public name: string;         // tab display name
@@ -279,6 +281,7 @@ export class Editor {
     }
 }
 
+@Injectable({ providedIn: 'root' })
 export class Manager {
     Tab = EditorTab;
     Editor = Editor;

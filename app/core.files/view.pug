@@ -1,69 +1,45 @@
 .side-container
     .side-heading.area-round
-        input.form-check-input.mr-2(type="checkbox")
         h3.nowrap.m-0(style="max-width: 220px; overflow: hidden; text-overflow: ellipsis;")
             span {{title}}
         .ml-auto
-        .btn.btn-white.btn-sm.mr-1
+        .btn.btn-white.btn-sm.mr-1((click)="refresh();")
             i.fa-solid.fa-refresh.text-blue
-        .btn.btn-white.btn-sm.mr-1
+        .btn.btn-white.btn-sm.mr-1((click)="create(null, 'folder');")
+            i.fa-solid.fa-folder-plus.text-blue
+        .btn.btn-white.btn-sm.mr-1((click)="create(null, 'file');")
             i.fa-solid.fa-plus.text-blue
-        .btn.btn-white.btn-sm
+        .btn.btn-white.btn-sm((click)="upload();")
             i.fa-solid.fa-upload.text-blue
-        
+
     .side-body.area-round
-        //- table.table.table-sm.table-hover.table-vcenter.mb-5
-        //-     tr
-        //-         td.w-1.pr-0
-        //-         td.w-1.pr-0
-        //-             .avatar-area.avatar-area-sm
-        //-                 .avatar-container.folder
-        //-                     i.fa-solid.fa-folder
-        //-         td(colspan=2)
-        //-             .d-flex
-        //-                 input.form-control(ng-model="drive.create_name" ng-enter="drive.api.create()" placeholder="folder name")
-        //-                 .btn.btn-primary.btn-circle.ml-2(style="width: 36px;" ng-click="drive.api.create()")
-        //-                     i.fa-solid.fa-check
+        mat-tree.file-tree([dataSource]="dataSource", [treeControl]="treeControl")
+            mat-tree-node(*matTreeNodeDef="let node", matTreeNodePadding="", matTreeNodePaddingIndent="16px", (click)="open(node)")
+                i.tree-icon.fa-regular.fa-file-lines.mr-2
+                div(style="flex: auto;") 
+                    span(*ngIf="!node.editable", (click)="node.editable = true; $event.stopPropagation(); scope.render()") {{node.name}}
+                    input.form-control.form-control-sm([(ngModel)]="node.rename", placeholder="{{node.type.split('.')[1]}} name", (keyup.enter)="move(node);", *ngIf="node.editable", (click)="$event.stopPropagation();")
+                i.icon-action.fa-solid.fa-download((click)="download(node); $event.stopPropagation();")
+                i.icon-action.fa-solid.fa-trash-can((click)="delete(node); $event.stopPropagation();")
 
-        //-     tr
-        //-         td.w-1.pr-0
-        //-             input.form-check-input(type="checkbox" ng-model="file.checked" ng-click="drive.check(file)")
-        //-         td.w-1.pr-0(ng-click="drive.check(file)")
-        //-             .avatar-area.avatar-area-sm
-        //-                 .avatar-container(class="{{file.type == 'folder' ? 'folder' : ''}}")
-        //-                     i.fa-solid.fa-file(ng-if="file.type == 'file'")
-        //-                     i.fa-solid.fa-folder(ng-if="file.type == 'folder'")
-        //-         td.text-left.filename(ng-if="!file.edit" ng-click="drive.check(file)")
-        //-             div
-        //-                 a(ng-click="drive.click(file)" ng-if="file.type == 'folder'") {{file.name}}
-        //-                 a(ng-href="{{drive.api.download(file)}}" target="_blank" ng-if="file.type == 'file'") {{file.name}}
-        //-             div
-        //-                 small.text-muted {{drive.timer(file.ctime)}}
-        //-                 small.text-muted.mr-1.ml-1 /
-        //-                 small.text-muted {{drive.filesize(file.size)}}
+            mat-tree-node(*matTreeNodeDef="let node; when: isNew", matTreeNodePadding="", matTreeNodePaddingIndent="16px", (click)="open(node)")
+                i.tree-icon.fa-regular.fa-file.mr-2(*ngIf="node.type == 'new.file'")
+                i.tree-icon.fa-regular.fa-folder.mr-2(*ngIf="node.type == 'new.folder'")
+                div(style="flex: auto;") 
+                    input.form-control.form-control-sm([(ngModel)]="node.name", placeholder="{{node.type.split('.')[1]}} name", (keyup.enter)="create(node);")
+                i.icon-action-always.fa-solid.fa-xmark((click)="delete(node); $event.stopPropagation();")
+                i.icon-action-always.fa-solid.fa-check((click)="create(node); $event.stopPropagation();")
 
-        //-         td.text-left(ng-if="file.edit" colspan=2)
-        //-             .d-flex
-        //-                 input.form-control(ng-model="file.rename" ng-enter="drive.api.rename(file)")
-        //-                 .btn.btn-primary.btn-circle.ml-2(style="width: 36px;" ng-click="drive.api.rename(file)")
-        //-                     i.fa-solid.fa-check
-
-        //-         td.w-1.text-right.pr-2.actions(ng-if="!file.edit")
-        //-             .dropdown
-        //-                 button.btn.btn-white.btn-sm(data-bs-toggle="dropdown" aria-expanded="false")
-        //-                     i.fa-solid.fa-ellipsis-vertical
-        //-                 ul.dropdown-menu
-        //-                     li
-        //-                         a.dropdown-item(ng-click="drive.rename(file)")
-        //-                             i.fa-solid.fa-pen-to-square
-        //-                             span Rename
-        //-                     li
-        //-                         a.dropdown-item(ng-href="{{drive.api.download(file)}}" target="_blank")
-        //-                             i.fa-solid.fa-download
-        //-                             span Download
-        //-                     li
-        //-                         a.dropdown-item(ng-click="drive.api.remove(file)")
-        //-                             i.fa-solid.fa-trash
-        //-                             span Delete
+            mat-tree-node(*matTreeNodeDef="let node; when: isFolder", matTreeNodePadding="", matTreeNodeToggle="", matTreeNodePaddingIndent="16px")
+                i.tree-icon.mr-2([ngClass]="treeControl.isExpanded(node) ? 'fa-regular fa-folder-open' : 'fa-solid fa-folder'")
+                div(style="flex: auto;")
+                    span(*ngIf="!node.editable", (click)="node.editable = true; $event.stopPropagation(); scope.render()") {{node.name}}
+                    input.form-control.form-control-sm([(ngModel)]="node.rename", placeholder="{{node.type.split('.')[1]}} name", (keyup.enter)="move(node);", *ngIf="node.editable", (click)="$event.stopPropagation();")
+                
+                i.icon-action.fa-solid.fa-trash-can((click)="delete(node); $event.stopPropagation();")
+                i.icon-action.fa-solid.fa-arrow-up-from-bracket((click)="upload(node); $event.stopPropagation();")
+                i.icon-action.fa-solid.fa-download((click)="download(node); $event.stopPropagation();")
+                i.icon-action.fa-solid.fa-folder-plus((click)="create(node, 'folder'); $event.stopPropagation();")
+                i.icon-action.fa-solid.fa-plus((click)="create(node, 'file'); $event.stopPropagation();")
 
     ngx-loading([show]="loading")

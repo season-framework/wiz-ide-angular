@@ -133,7 +133,7 @@ export class AppComponent implements AfterViewInit {
     public rightmenu: any = (() => {
         let obj: any = {};
 
-        obj.mode = 'branch';
+        obj.mode = 'project';
         obj.top = [];
         obj.bottom = [];
         obj.width = 360;
