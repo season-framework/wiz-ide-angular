@@ -217,6 +217,12 @@ export class Component implements OnInit {
                 config: { monaco: { language: 'typescript', renderValidationDecorations: 'off' } }
             }),
             editor.create({
+                name: 'Directive',
+                viewref: MonacoEditor,
+                path: apppath + "/app.directive.ts",
+                config: { monaco: { language: 'typescript', renderValidationDecorations: 'off' } }
+            }),
+            editor.create({
                 name: 'API',
                 viewref: MonacoEditor,
                 path: apppath + "/api.py",

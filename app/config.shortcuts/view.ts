@@ -57,6 +57,19 @@ export class Component implements AfterViewInit {
                     await this.editorManager.activated.close();
             }
         }, {
+            key: ["cmd + p", "ctrl + p"],
+            monaco: KeyMod.CtrlCmd | KeyCode.KeyP,
+            preventDefault: true,
+            command: async () => {
+                await this.scope.rightmenu.toggle(this.scope.rightmenu.top[2]);
+            }
+        }, {
+            key: ["esc"],
+            preventDefault: true,
+            command: async () => {
+                await this.scope.rightmenu.toggle();
+            }
+        }, {
             key: ["alt + t"],
             monaco: KeyMod.Alt | KeyCode.KeyT,
             preventDefault: true,

@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import { Router, Component, AfterViewInit, ChangeDetectorRef } from '@angular/core';
+import { Component, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import EditorManager from '@wiz/service/editor';
 
@@ -31,7 +31,7 @@ toastr.options = {
 })
 export class AppComponent implements AfterViewInit {
 
-    constructor(private editorManager: EditorManager, private ref: ChangeDetectorRef, public modalService: NgbModal) {
+    constructor(public editorManager: EditorManager, private ref: ChangeDetectorRef, public modalService: NgbModal) {
     }
 
     public alert: any = (() => {
@@ -138,8 +138,10 @@ export class AppComponent implements AfterViewInit {
         obj.bottom = [];
         obj.width = 360;
 
-        obj.toggle = async (item) => {
-            if (obj.mode == item.id) {
+        obj.toggle = async (item: any) => {
+            if (!item) {
+                obj.mode = null;
+            } else if (obj.mode == item.id) {
                 obj.mode = null;
             } else {
                 obj.mode = item.id;

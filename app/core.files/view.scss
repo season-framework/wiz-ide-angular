@@ -11,6 +11,11 @@
     color: var(--wiz-color-blue);
     align-items: center;
 
+    i {
+        width: 14px;
+        text-align: center;
+    }
+
     .actions {
         margin-left: auto;
 
@@ -64,7 +69,15 @@
             margin-left: 8px;
         }
 
+        &.active {
+            color: var(--wiz-color-blue);
+            background: var(--wiz-color-blue-lt);
+        }
+
         &:hover {
+            color: var(--wiz-color-blue);
+            background: var(--wiz-color-blue-lt);
+
             i.icon-action {
                 display: inline-block;
                 color: var(--wiz-color-gray);
@@ -73,9 +86,6 @@
                     color: var(--wiz-color-blue);
                 }
             }
-
-            color: var(--wiz-color-blue);
-            background: var(--wiz-color-blue-lt);
         }
     }
 
@@ -85,4 +95,16 @@
         border-radius: 4px;
         text-align: left;
     }
+}
+
+.dropdown {
+    .btn::after {
+        display: none;
+    }
+}
+
+.file-title {
+    flex: auto;
+    overflow: hidden;
+    white-space: nowrap;
 }

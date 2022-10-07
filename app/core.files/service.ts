@@ -19,6 +19,7 @@ export class FileNode {
     public rename: string = "";
     public isLoading: boolean = false;
     public editable: boolean = false;
+    public extended: boolean = false;
 }
 
 export class FileDataSource implements DataSource<FileNode> {
@@ -102,6 +103,7 @@ export class FileDataSource implements DataSource<FileNode> {
             const nodes = await this.component.list(node);
             this.data.splice(index + 1, 0, ...nodes);
             node.isLoading = false;
+            node.extended = true;
         } else {
             let count = 0;
             for (
@@ -110,8 +112,10 @@ export class FileDataSource implements DataSource<FileNode> {
                 i++, count++
             ) { }
             this.data.splice(index + 1, count);
+            node.extended = false;
         }
 
         this.dataChange.next(this.data);
+        await this.component.scope.render();
     }
 }

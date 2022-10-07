@@ -8,7 +8,14 @@ export class Component implements OnInit {
     public data: any = {};
 
     public async ngOnInit() {
+        await this.loader(true);
         this.data = await this.editor.tab().data();
+        await this.loader(false);
+    }
+
+    public async loader(status) {
+        this.loading = status;
+        await this.scope.render();
     }
 
     public async init(e) {
@@ -19,8 +26,5 @@ export class Component implements OnInit {
         }
         editor.meta.monaco = e.editor;
         editor.meta.monaco.focus();
-
-        this.loading = false;
-        await this.scope.render();
     }
 }

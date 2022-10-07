@@ -1,8 +1,12 @@
+import { OnInit, Input } from '@angular/core';
+import $ from 'jquery';
+import toastr from "toastr";
+
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { FileNode, FileDataSource } from './service';
 
-import { OnInit, Input } from '@angular/core';
-import toastr from "toastr";
+import EditorManager from '@wiz/service/editor';
+import MonacoEditor from "@wiz/app/season.monaco";
 
 toastr.options = {
     "closeButton": false,
@@ -22,14 +26,16 @@ toastr.options = {
     "hideMethod": "fadeOut"
 };
 
-
 @dependencies({
     MatTreeModule: '@angular/material/tree'
 })
 export class Component implements OnInit {
     @Input() scope: any;
+    @Input() menu: any;
     @Input() title: string = "Files";
     @Input() path: string;
+    
+    public color = '';
 
     public APP_ID: string = wiz.namespace;
     public loading: boolean = false;
@@ -38,9 +44,24 @@ export class Component implements OnInit {
     private treeControl: FlatTreeControl<FileNode>;
     private dataSource: FileDataSource;
     private getLevel = (node: FileNode) => node.level;
-    private isExpandable = (node: FileNode) => node.type == 'folder';
+    private isExpandable = (node: FileNode) => node.extended;
     private isFolder = (_: number, node: FileNode) => node.type == 'folder';
     private isNew = (_: number, node: FileNode) => node.type == 'new.folder' || node.type == 'new.file';
+
+    constructor(private editorManager: EditorManager) {
+    }
+
+    public active(node: FileNode | null) {
+        try {
+            if (this.editorManager.activated) {
+                if (this.editorManager.activated.tab().path == node.path) {
+                    return true;
+                }
+            }
+        } catch (e) {
+        }
+        return false;
+    }
 
     public async list(node: FileNode) {
         let { code, data } = await wiz.call("list", { path: node.path });
@@ -54,15 +75,96 @@ export class Component implements OnInit {
         return data;
     }
 
+    private async update(path: string, data: string) {
+        let res = await wiz.call('update', { path: path, code: data });
+        if (res.code == 200) toastr.success("Updated");
+    }
+
     public async open(node: FileNode) {
-        console.log(node);
+        if (!node) return;
+        if (node.editable) return;
+        if (node.type.split(".")[0] == "new") return;
+
+        let viewtypes: any = {
+            'ts': { viewref: MonacoEditor, config: { monaco: { language: 'typescript', renderValidationDecorations: 'off' } } },
+            'js': { viewref: MonacoEditor, config: { monaco: { language: 'javascript' } } },
+            'css': { viewref: MonacoEditor, config: { monaco: { language: 'css' } } },
+            'scss': { viewref: MonacoEditor, config: { monaco: { language: 'scss' } } },
+            'json': { viewref: MonacoEditor, config: { monaco: { language: 'json' } } },
+            'pug': { viewref: MonacoEditor, config: { monaco: { language: 'pug' } } },
+            'py': { viewref: MonacoEditor, config: { monaco: { language: 'python' } } }
+        };
+
+        let extension = node.path.substring(node.path.lastIndexOf(".") + 1).toLowerCase();
+
+        if (!viewtypes[extension]) {
+            await this.download(node);
+            return;
+        }
+
+        let { viewref, config } = viewtypes[extension];
+
+        let editor = this.editorManager.create({
+            component_id: this.APP_ID,
+            path: node.path,
+            title: node.name,
+            unique: true,
+            current: 0
+        });
+
+        editor.create({
+            name: 'config',
+            viewref: viewref,
+            path: node.path,
+            config: config
+        }).bind('data', async (tab) => {
+            let { code, data } = await wiz.call('read', { path: node.path });
+            if (code != 200) return {};
+            return { data };
+        }).bind('update', async (tab) => {
+            let data = await tab.data();
+            await this.update(node.path, data.data);
+        });
+
+        await editor.open();
     }
 
-    public async download(node: FileNode) {
-        console.log(node);
+    public upload_target: FileNode | null;
+    public upload_mode: string = 'file';
+
+    public async upload_file() {
+        await this.loader(true);
+        let target = this.upload_target;
+        if (!target) target = this.rootNode;
+
+        let fn = (fd) => new Promise((resolve) => {
+            let url = wiz.url('upload');
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: fd,
+                cache: false,
+                contentType: false,
+                processData: false
+            }).always(function (res) {
+                resolve(res);
+            });
+        });
+
+        let fd = new FormData($('#file-form')[0]);
+        fd.append("path", target.path);
+        await fn(fd);
+
+        this.upload_target = null;
+        await this.loader(false);
+        await this.refresh(this.rootNode == target ? null : target);
     }
 
-    public async upload(node: FileNode | null) {
+    public async upload(node: FileNode | null, mode: string = 'file') {
+        this.upload_target = node;
+        this.upload_mode = mode;
+        await this.scope.render();
+        $('#file-upload').click();
     }
 
     public async move(node: FileNode) {
@@ -107,7 +209,7 @@ export class Component implements OnInit {
 
     public async create(node: FileNode | null, type: any) {
         if (!node) {
-            let newitem = new FileNode('', this.rootNode.path, 'new.' + type);
+            let newitem = new FileNode('', this.rootNode.path, 'new.' + type, null, 0);
             await this.dataSource.prepend(newitem, null);
             return;
         }
@@ -127,7 +229,7 @@ export class Component implements OnInit {
         } else {
             if (!this.treeControl.isExpanded(node))
                 await this.dataSource.toggle(node, true);
-            let newitem = new FileNode('', node.path, 'new.' + type, node);
+            let newitem = new FileNode('', node.path, 'new.' + type, node, node.level + 1);
             await this.dataSource.prepend(newitem, node);
         }
     }
@@ -140,6 +242,12 @@ export class Component implements OnInit {
             let data = await this.list(this.rootNode);
             this.dataSource.data = data;
         }
+    }
+
+    public async download(node: FileNode | null) {
+        if (!node) node = this.rootNode;
+        let target = wiz.url("download/" + node.path);
+        window.open(target, '_blank');
     }
 
     public async loader(status) {

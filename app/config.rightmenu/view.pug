@@ -1,3 +1,5 @@
+wiz-core-files(*ngIf="menu.mode == 'project'", [scope]="scope", [menu]="menu", [title]="'Project'", [path]="'src'")
+
 wiz-season-preview(*ngIf="menu.mode == 'preview'", [scope]="scope", (binding)="binding.bind($event)", [menu]="menu")
 wiz-season-pip(*ngIf="menu.mode == 'pip'", [scope]="scope", [menu]="menu")
 wiz-ng-npm(*ngIf="menu.mode == 'npm'", [scope]="scope", [menu]="menu")
