@@ -12,9 +12,9 @@
         "selector": "wiz-core-project-info",
         "inputs": [
             "scope",
-            "menu"
+            "editor"
         ],
         "outputs": []
     },
-    "template": "wiz-core-project-info([scope]=\"\", [menu]=\"\")"
+    "template": "wiz-core-project-info([scope]=\"\", [editor]=\"\")"
 }

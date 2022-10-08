@@ -11,7 +11,7 @@ toastr.options = {
     "debug": false,
     "newestOnTop": true,
     "progressBar": false,
-    "positionClass": "toast-bottom-right",
+    "positionClass": "toast-top-center",
     "preventDuplicates": true,
     "onclick": null,
     "showDuration": 300,
@@ -71,10 +71,12 @@ export class AppComponent implements AfterViewInit {
 
         obj.show = async () => {
             obj.status = true;
+            await this.scope.render();
         }
 
         obj.hide = async () => {
             obj.status = false;
+            await this.scope.render();
         }
 
         return obj;

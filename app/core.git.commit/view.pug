@@ -3,9 +3,24 @@
         h3.nowrap.m-0(style="max-width: 220px; overflow: hidden; text-overflow: ellipsis;")
             span Commit
 
-    .side-search.area-round
-        input.form-control(type="text" placeholder="project", [(ngModel)]="keyword")
-        button.btn.btn-primary.ms-2((click)="create(keyword)") Create
+    .side-commit
+        textarea.form-control(type="text" placeholder="Commit message", [(ngModel)]="message", rows=5)
+        button.btn.btn-primary.btn-block.mt-2((click)="commit(message)") Commit
 
+    .side-heading
+        h3.nowrap.m-0(style="max-width: 220px; overflow: hidden; text-overflow: ellipsis;")
+            span Changes
 
-    ngx-loading([show]="loading")
+    .side-body
+        table.table.table-sm.table-hover.mb-0(*ngIf="files.length == 0")
+            tbody
+                tr
+                    td.text-center.p-4 No Changes
+        table.table.table-sm.table-hover.mb-0(*ngIf="files.length > 0")
+            tbody
+                tr(*ngFor="let item of files")
+                    td
+                        span.badge.badge-sm.mr-1(class="{{item.color}}") {{item.change_type}}
+                        span {{item.path}}
+
+ngx-loading([show]="loading")

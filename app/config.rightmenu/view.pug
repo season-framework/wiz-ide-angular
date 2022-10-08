@@ -1,4 +1,6 @@
 wiz-core-project(*ngIf="menu.mode == 'project'", [scope]="scope", [menu]="menu")
+wiz-core-git-commit(*ngIf="menu.mode == 'commit'", [scope]="scope", [menu]="menu")
+wiz-core-commit-history(*ngIf="menu.mode == 'commits'", [scope]="scope", [menu]="menu")
 
 wiz-season-preview(*ngIf="menu.mode == 'preview'", [scope]="scope", (binding)="binding.bind($event)", [menu]="menu")
 wiz-season-pip(*ngIf="menu.mode == 'pip'", [scope]="scope", [menu]="menu")

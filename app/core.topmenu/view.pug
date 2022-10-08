@@ -4,5 +4,5 @@
         a(*ngFor="let branch of branch.data", ngbDropdownItem="", href="?branch={{branch}}") {{branch}}
 
 a.btn.btn-primary.me-1(href="?dev={{!isdev}}") {{isdev ? 'develop' : 'product'}}
-a.btn.btn-primary.me-1((click)="clean()") Clean
+a.btn.btn-primary.me-1((click)="clean()") Build
 a.btn.btn-primary.me-1((click)="scope.update()") Save

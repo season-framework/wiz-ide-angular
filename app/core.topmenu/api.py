@@ -5,7 +5,6 @@ def branches(segment):
 def clean(segment):
     try:
         workspace = wiz.workspace("service")
-        workspace.build.clean()
         workspace.build()
     except:
         wiz.response.status(500)

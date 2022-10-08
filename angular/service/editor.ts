@@ -15,7 +15,7 @@ export class EditorTab {
         monaco: {
             wordWrap: true,
             roundedSelection: false,
-            scrollBeyondLastLine: false,
+            scrollBeyondLastLine: true,
             glyphMargin: false,
             folding: true,
             fontSize: 14,
@@ -257,6 +257,9 @@ export class Editor {
 
         for (let i = 0; i < this.tabs.length; i++)
             this.tabs[i].destroy();
+
+        if (this.event.close)
+            await this.event.close(...arguments);
 
         await manager.scope.render();
     }

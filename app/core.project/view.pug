@@ -5,7 +5,10 @@
 
     .side-search.area-round
         input.form-control(type="text" placeholder="project", [(ngModel)]="keyword")
-        button.btn.btn-primary.ms-2((click)="create(keyword)") Create
+        button.btn.btn-primary.ms-2((click)="create()")
+            i.fa-solid.fa-plus
+        button.btn.btn-primary.ms-2((click)="upload()")
+            i.fa-solid.fa-upload
 
     .side-body.area-round
         table.table.table-hover
@@ -25,4 +28,8 @@
                             a.btn.btn-sm.btn-white((click)="open(item)")
                                 i.fa-solid.fa-cog
 
-    ngx-loading([show]="loading")
+div(style="display: none;")
+    form#file-form
+        input#file-upload.form-control(type='file', name='file[]', (change)="upload_file()", webkitdirectory, mozdirectory, msdirectory, odirectory, directory, multiple)
+
+ngx-loading([show]="loading")

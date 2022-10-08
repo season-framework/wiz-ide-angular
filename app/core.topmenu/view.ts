@@ -6,7 +6,7 @@ toastr.options = {
     "debug": false,
     "newestOnTop": true,
     "progressBar": false,
-    "positionClass": "toast-bottom-right",
+    "positionClass": "toast-top-center",
     "preventDuplicates": true,
     "onclick": null,
     "showDuration": 300,
@@ -51,7 +51,7 @@ export class Component implements OnInit {
         try {
             let { code, data } = await wiz.call("clean");
             if (code == 200) {
-                toastr.success("Build Cleaned");
+                toastr.success("Builded");
             } else {
                 toastr.error("Error");
             }

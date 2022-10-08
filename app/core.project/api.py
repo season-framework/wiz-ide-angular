@@ -1,3 +1,4 @@
+import git
 import os
 import zipfile
 import tempfile
@@ -5,6 +6,19 @@ import time
 import shutil
 import datetime
 import json
+
+def controllers():
+    fs = wiz.workspace("service").fs("src", "controller")
+    res = []
+    try:
+        ctrls = fs.list()
+        for ctrl in ctrls:
+            if fs.isfile(ctrl) and os.path.splitext(ctrl)[-1] == ".py":
+                res.append(ctrl[:-3])
+    except:
+        pass
+
+    wiz.response.status(200, res)
 
 workspace = wiz.workspace("service")
 working_dir = wiz.server.path.branch
@@ -73,3 +87,59 @@ def ng_download(segment):
 
     zipdata.close()
     wiz.response.download(zippath, as_attachment=True, filename=filename)
+
+def upload(segment):
+    path = wiz.request.query("path", True)
+    files = wiz.request.files()
+    for i in range(len(files)):
+        f = files[i]
+        name = f.filename
+        name = name.split("/")
+        name = "/".join(name[1:])
+        name = os.path.join(path, name)
+        fs.write.file(name, f)
+
+    current_branch = wiz.branch()
+    wiz.branch(path)
+    wp = wiz.workspace("service")
+    wp.build.clean()
+    wp.build()
+    wiz.branch(current_branch)
+
+    wiz.response.status(200)
+
+def create():
+    path = wiz.request.query("path", True)
+    target_path = fs.abspath(os.path.join(path, "src"))
+    copyfs = wiz.workspace("ide").fs()
+    copyfs.copy("sample", target_path)
+    
+    current_branch = wiz.branch()
+    wiz.branch(path)
+    wp = wiz.workspace("service")
+    wp.build.clean()
+    wp.build()
+    wiz.branch(current_branch)
+
+    wiz.response.status(200)
+
+def git():
+    path = wiz.request.query("path", True)
+    target_path = fs.abspath(os.path.join(path))
+    try:
+        git.Repo.init(target_path)
+    except:
+        pass
+
+    wiz.response.status(200)
+
+def data():
+    path = wiz.request.query("path", True)
+    text = fs.read(path, "")
+    wiz.response.status(200, text)
+
+def update():
+    path = wiz.request.query("path", True)
+    data = wiz.request.query("data", True)
+    fs.write(path, data)
+    wiz.response.status(200)
