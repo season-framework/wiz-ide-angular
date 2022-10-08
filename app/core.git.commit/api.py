@@ -4,19 +4,21 @@ import os
 workspace = wiz.workspace("service")
 
 def changes():
+    res = []
     cwd = workspace.fs().abspath()
     repo = git.Repo.init(cwd)
-    
     repo.git.add('--all')
-    src = "index"
-    parent = repo.commit()
-    diffs = parent.diff(None)
-    
-    res = []
-    for diff in diffs:
-        obj = {"change_type": diff.change_type, "path": diff.b_path, "commit": src, "parent": str(parent)}        
-        path = obj['path']
-        res.append(obj)
+    try:
+        src = "index"
+        parent = repo.commit()
+        diffs = parent.diff(None)
+        for diff in diffs:
+            obj = {"change_type": diff.change_type, "path": diff.b_path, "commit": src, "parent": str(parent)}        
+            path = obj['path']
+            res.append(obj)
+    except:
+        repo.index.commit("init")
+
     wiz.response.status(200, res)
 
 def commit():
