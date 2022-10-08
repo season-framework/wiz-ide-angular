@@ -44,19 +44,24 @@ export class Component implements OnInit {
 
     public async load() {
         this.items = [
-            { title: 'App Module', subtitle: 'app.module', path: 'angular/app/app.module.ts', lang: 'typescript' },
-            { title: 'App Routing', subtitle: 'app-routing.module', path: 'angular/app/app-routing.module.ts', lang: 'typescript' },
             {
-                title: 'App UI', subtitle: 'app.component', path: 'angular',
+                title: 'Web Config', subtitle: 'ng.component', path: 'angular/ui',
                 files: [
                     { name: 'index', path: 'angular/index.pug', lang: 'pug' },
-                    { name: 'app-root', path: 'angular/app/app.component.pug', lang: 'pug' },
+                    { name: 'web resources', path: 'angular/angular.build.options.json', lang: 'json' }
+                ]
+            },
+            {
+                title: 'Advanced', subtitle: 'ng.advanced', path: 'angular/advanced',
+                files: [
+                    { name: 'module', path: 'angular/app/app.module.ts', lang: 'typescript' },
+                    { name: 'routing', path: 'angular/app/app-routing.module.ts', lang: 'typescript' },
+                    { name: 'wiz', path: 'angular/wiz.ts', lang: 'typescript' },
+                    { name: 'app', path: 'angular/app/app.component.pug', lang: 'pug' },
                     { name: 'component', path: 'angular/app/app.component.ts', lang: 'typescript' },
                     { name: 'scss', path: 'angular/app/app.component.scss', lang: 'scss' }
                 ]
-            },
-            { title: 'Build Options', subtitle: 'app.component', path: 'angular/angular.build.options.json', lang: 'json' },
-            { title: 'Wiz Class', subtitle: 'wiz.ts', path: 'angular/wiz.ts', lang: 'typescript' }
+            }
         ];
 
         await this.scope.render();
@@ -77,7 +82,7 @@ export class Component implements OnInit {
             path: item.path,
             title: item.title,
             subtitle: item.subtitle,
-            unique: item.files ? false : true,
+            unique: true,
             current: 0
         });
 

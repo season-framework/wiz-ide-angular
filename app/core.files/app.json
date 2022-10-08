@@ -3,5 +3,19 @@
         "id": "core.files",
         "name": "CoreFilesComponent",
         "path": "./core.files/core.files.component"
-    }
+    },
+    "id": "core.files",
+    "title": "File Browser",
+    "category": "app",
+    "ng": {
+        "selector": "wiz-core-files",
+        "inputs": [
+            "scope",
+            "menu",
+            "title",
+            "path"
+        ],
+        "outputs": []
+    },
+    "template": "wiz-core-files([scope]=\"\", [menu]=\"\", [title]=\"\", [path]=\"\")"
 }

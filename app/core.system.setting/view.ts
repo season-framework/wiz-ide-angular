@@ -24,6 +24,7 @@ toastr.options = {
 
 export class Component implements OnInit {
     @Input() scope: any;
+    @Input() menu: any;
 
     public APP_ID: string = wiz.namespace;
     public item: any = null;
@@ -37,6 +38,8 @@ export class Component implements OnInit {
     private async update(path: string, data: string) {
         let res = await wiz.call('update', { path: path, code: data });
         if (res.code == 200) toastr.success("Updated");
+        res = await wiz.call('build');
+        if (res.code == 200) toastr.info("Build Finish");
     }
 
     public async open(name) {

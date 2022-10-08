@@ -4,14 +4,14 @@
         button.btn.btn-sm.btn-primary.ml-1.pl-3.pr-3((click)="create()")
             i.fa-solid.fa-plus
 
-    .browser-list        
+    .browser-list
         .browser-list-wrapper(*ngFor="let category of categories")
             .browser-category(*ngIf="categories.length > 1")
                 span {{category}}
                 small.ml-1.text-muted ({{apps[category].length}})
             
             ng-container(*ngFor="let item of apps[category]")
-                .browser-info(*ngIf="match(item)", (click)="open(item)", [ngClass]="active(item)")
+                .browser-info(*ngIf="match(item)", (click)="open(item)", [ngClass]="active(item)", draggable="true", (dragstart)="drag($event, item)")
                     .avatar-area.avatar-area-sm.mr-3
                         .avatar-container
                             i.fa-solid.fa-cube

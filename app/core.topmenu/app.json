@@ -1,8 +1,18 @@
 {
-    "id": "core.leftmenu.route",
+    "id": "core.topmenu",
     "ng.build": {
         "id": "core.topmenu",
         "name": "CoreTopmenuComponent",
         "path": "./core.topmenu/core.topmenu.component"
-    }
+    },
+    "title": "Top Menu",
+    "category": "core",
+    "ng": {
+        "selector": "wiz-core-topmenu",
+        "inputs": [
+            "scope"
+        ],
+        "outputs": []
+    },
+    "template": "wiz-core-topmenu([scope]=\"\")"
 }

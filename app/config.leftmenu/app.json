@@ -3,5 +3,18 @@
         "id": "config.leftmenu",
         "name": "ConfigLeftmenuComponent",
         "path": "./config.leftmenu/config.leftmenu.component"
-    }
+    },
+    "id": "config.leftmenu",
+    "category": "config",
+    "title": "Left Menu",
+    "ng": {
+        "selector": "wiz-config-leftmenu",
+        "inputs": [
+            "scope",
+            "menu",
+            "binding"
+        ],
+        "outputs": []
+    },
+    "template": "wiz-config-leftmenu([scope]=\"\", [menu]=\"\", [binding]=\"\")"
 }

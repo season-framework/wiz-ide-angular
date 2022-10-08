@@ -2,6 +2,7 @@ import { OnInit, Input } from '@angular/core';
 
 export class Component implements OnInit {
     @Input() scope: any;
+    @Input() menu: any;
 
     public APP_ID: string = wiz.namespace;
     public data: any = {};
@@ -16,12 +17,12 @@ export class Component implements OnInit {
     }
 
     public async ngOnInit() {
-        let { code, data } = await wiz.call("status");
+        let { data } = await wiz.call("status");
         this.data = data;
         await this.scope.render();
 
         this.interval_id = setInterval(async () => {
-            let { code, data } = await wiz.call("status");
+            let { data } = await wiz.call("status");
             this.data = data;
             await this.scope.render();
         }, 1000);

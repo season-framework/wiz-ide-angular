@@ -2,7 +2,7 @@
     .editor-info-container.area-round
         h3 App Info
 
-        .form-group.row(*ngIf="editor.path")
+        .form-group.row(*ngIf="!editor.path")
             .col-3
                 label.form-label.col-form-label App ID
             .col
@@ -30,14 +30,9 @@
                             span Config
                     
                     label.form-selectgroup-item
-                        input.form-selectgroup-input(type="radio", name="ide-app-{{editor.id}}", value="left", [(ngModel)]="data.category")
+                        input.form-selectgroup-input(type="radio", name="ide-app-{{editor.id}}", value="app", [(ngModel)]="data.category")
                         span.form-selectgroup-label
-                            span Left Menu
-                    
-                    label.form-selectgroup-item
-                        input.form-selectgroup-input(type="radio", name="ide-app-{{editor.id}}", value="right", [(ngModel)]="data.category")
-                        span.form-selectgroup-label
-                            span Right Menu
+                            span App
                     
                     label.form-selectgroup-item
                         input.form-selectgroup-input(type="radio", name="ide-app-{{editor.id}}", value="editor", [(ngModel)]="data.category")

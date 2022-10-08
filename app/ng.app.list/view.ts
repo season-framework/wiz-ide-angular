@@ -1,3 +1,45 @@
+const DEFAULT_COMPONENT = `import { OnInit, Input } from '@angular/core';
+
+export class Replacement implements OnInit {
+    @Input() title: any;
+
+    constructor() {
+    }
+
+    public async ngOnInit() {
+    }
+}`.replace('Replacement', 'Component');
+
+const DEFAULT_API = `def status(segment):
+    user = wiz.request.query('user', True)
+    print(segment, user)
+    wiz.response.status(200, 'Message')
+`;
+
+const DEFAULT_SOKCET = `class Controller:
+    def __init__(self, server):
+        self.server = server
+
+    def connect(self, wiz, flask):
+        print(flask.session)
+        pass
+
+    def join(self, flask, data, io):
+        sid = flask.request.sid
+        if 'id' not in data: return
+        room = data['id']
+        io.join(room)
+
+    def leave(self, flask, data, io):
+        sid = flask.request.sid
+        if 'id' not in data: return
+        room = data['id']
+        io.leave(room)
+
+    def disconnect(self, flask, io):
+        sid = flask.request.sid
+`;
+
 import EditorManager from '@wiz/service/editor';
 import { OnInit, Input } from '@angular/core';
 import toastr from "toastr";
@@ -43,6 +85,10 @@ export class Component implements OnInit {
         else this.infoEditorClass = InfoEditor;
 
         await this.load();
+    }
+
+    public drag(event: any, item: any) {
+        event.dataTransfer.setData("text", item.template ? item.template : '');
     }
 
     public active(item: EditorManager.Editor) {
@@ -158,7 +204,7 @@ export class Component implements OnInit {
             return data;
         }).bind('update', async (tab) => {
             let data = await tab.data();
-            let viewuri = data.viewuri;
+            let viewuri = data.preview ? data.preview : data.viewuri;
 
             let check = /^[a-z0-9.]+$/.test(data.namespace);
             if (!check) return toastr.error("invalidate namespace");
@@ -218,12 +264,6 @@ export class Component implements OnInit {
                 config: { monaco: { language: 'typescript', renderValidationDecorations: 'off' } }
             }),
             editor.create({
-                name: 'Directive',
-                viewref: MonacoEditor,
-                path: apppath + "/app.directive.ts",
-                config: { monaco: { language: 'typescript', renderValidationDecorations: 'off' } }
-            }),
-            editor.create({
                 name: 'API',
                 viewref: MonacoEditor,
                 path: apppath + "/api.py",
@@ -243,10 +283,19 @@ export class Component implements OnInit {
                 editor.meta.info = await editor.tab(0).data();
                 let { code, data } = await wiz.call('data', { path: tab.path });
                 if (code != 200) return {};
+
+                if (!data) {
+                    if (tab.name == 'Component') {
+                        data = DEFAULT_COMPONENT;
+                    } else if (tab.name == 'API') {
+                        data = DEFAULT_API;
+                    }
+                }
+
                 return { mode, data };
             }).bind('update', async (tab) => {
                 let data = await tab.data();
-                await this.update(tab.path, data.data, false, editor.meta.info ? editor.meta.info.viewuri : null);
+                await this.update(tab.path, data.data, false, editor.meta.info ? (editor.meta.info.preview ? editor.meta.info.preview : editor.meta.info.viewuri) : null);
             });
         }
 

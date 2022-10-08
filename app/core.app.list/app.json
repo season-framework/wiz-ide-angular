@@ -1,8 +1,19 @@
 {
-    "id": "core.leftmenu.apps",
+    "id": "core.app.list",
     "ng.build": {
         "id": "core.app.list",
         "name": "CoreAppListComponent",
         "path": "./core.app.list/core.app.list.component"
-    }
+    },
+    "title": "IDE Apps",
+    "category": "app",
+    "ng": {
+        "selector": "wiz-core-app-list",
+        "inputs": [
+            "scope",
+            "menu"
+        ],
+        "outputs": []
+    },
+    "template": "wiz-core-app-list([scope]=\"\", [menu]=\"\")"
 }

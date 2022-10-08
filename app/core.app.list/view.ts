@@ -86,16 +86,13 @@ export class Component implements OnInit {
         await this.scope.render();
     }
 
-    private async update(path: string, data: string, entire: boolean = false, viewuri: string | null = null) {
+    private async update(path: string, data: string, entire: boolean = false) {
         let res = await wiz.call('update', { path: path, code: data });
         toastr.success("Updated");
         await this.load();
         res = await wiz.call('build', { path: path, entire: entire });
         if (res.code == 200) toastr.info("Build Finish");
         else toastr.error("Error on build");
-        if (!viewuri) return;
-        let binding = this.scope.binding.load("season.preview");
-        if (binding) await binding.move(viewuri);
     }
 
     public async create() {
@@ -147,8 +144,9 @@ export class Component implements OnInit {
         }).bind('data', async (tab) => {
             let { code, data } = await wiz.call('data', { path: tab.path });
             if (code != 200) return {};
-            editor.meta.id = JSON.parse(data).id;
+            editor.meta.id = app.id;
             data = JSON.parse(data);
+            data.id = app.id;
             return data;
         }).bind('update', async (tab) => {
             let data = await tab.data();

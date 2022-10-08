@@ -22,6 +22,7 @@ toastr.options = {
 
 export class Component implements OnInit {
     @Input() scope: any;
+    @Input() menu: any;
     @Output() binding = new EventEmitter<any>();
 
     public APP_ID: string = wiz.namespace;

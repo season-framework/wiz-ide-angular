@@ -1,0 +1,20 @@
+{
+    "id": "core.project.info",
+    "title": "Project Info",
+    "viewuri": "",
+    "category": "editor",
+    "ng.build": {
+        "id": "core.project.info",
+        "name": "CoreProjectInfoComponent",
+        "path": "./core.project.info/core.project.info.component"
+    },
+    "ng": {
+        "selector": "wiz-core-project-info",
+        "inputs": [
+            "scope",
+            "menu"
+        ],
+        "outputs": []
+    },
+    "template": "wiz-core-project-info([scope]=\"\", [menu]=\"\")"
+}

@@ -3,5 +3,17 @@
         "id": "core.app.info",
         "name": "CoreAppInfoComponent",
         "path": "./core.app.info/core.app.info.component"
-    }
+    },
+    "id": "core.app.info",
+    "category": "editor",
+    "title": "IDE App Info",
+    "ng": {
+        "selector": "wiz-core-app-info",
+        "inputs": [
+            "scope",
+            "editor"
+        ],
+        "outputs": []
+    },
+    "template": "wiz-core-app-info([scope]=\"\", [editor]=\"\")"
 }

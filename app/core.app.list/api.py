@@ -16,9 +16,8 @@ def exists(segment):
 def update(segment):
     path = wiz.request.query("path", "")[4:]
     code = wiz.request.query("code", True)
-    fs = workspace.fs("src")
+    fs = workspace.fs()
     fs.write(path, code)
-    wiz.server.socket.bind()
     wiz.response.status(200)
 
 def build(segment):
@@ -36,7 +35,7 @@ def data(segment):
 
 def remove(segment):
     path = wiz.request.query("path", "")[4:]
-    fs = workspace.fs("src")
+    fs = workspace.fs()
     if len(path.split("/")) > 1 and path.split("/")[0] == "app":
         fs.delete(path)
     wiz.response.status(200)

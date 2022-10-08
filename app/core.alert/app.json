@@ -3,5 +3,20 @@
         "id": "core.alert",
         "name": "CoreAlertComponent",
         "path": "./core.alert/core.alert.component"
-    }
+    },
+    "id": "core.alert",
+    "category": "core",
+    "title": "Alert",
+    "ng": {
+        "selector": "wiz-core-alert",
+        "inputs": [
+            "title",
+            "message",
+            "action_text",
+            "action_class",
+            "close_text"
+        ],
+        "outputs": []
+    },
+    "template": "wiz-core-alert([title]=\"\", [message]=\"\", [action_text]=\"\", [action_class]=\"\", [close_text]=\"\")"
 }

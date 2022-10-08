@@ -3,5 +3,19 @@
         "id": "season.preview",
         "name": "SeasonPreviewComponent",
         "path": "./season.preview/season.preview.component"
-    }
+    },
+    "id": "season.preview",
+    "title": "App Preview",
+    "category": "app",
+    "ng": {
+        "selector": "wiz-season-preview",
+        "inputs": [
+            "scope",
+            "menu"
+        ],
+        "outputs": [
+            "binding"
+        ]
+    },
+    "template": "wiz-season-preview([scope]=\"\", [menu]=\"\", (binding)=\"\")"
 }

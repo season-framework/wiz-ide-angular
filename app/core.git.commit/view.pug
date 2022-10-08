@@ -1,0 +1,11 @@
+.side-container
+    .side-heading
+        h3.nowrap.m-0(style="max-width: 220px; overflow: hidden; text-overflow: ellipsis;")
+            span Commit
+
+    .side-search.area-round
+        input.form-control(type="text" placeholder="project", [(ngModel)]="keyword")
+        button.btn.btn-primary.ms-2((click)="create(keyword)") Create
+
+
+    ngx-loading([show]="loading")

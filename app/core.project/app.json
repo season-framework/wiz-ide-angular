@@ -1,0 +1,20 @@
+{
+    "id": "core.project",
+    "title": "Project Manager",
+    "viewuri": "",
+    "category": "app",
+    "ng.build": {
+        "id": "core.project",
+        "name": "CoreProjectComponent",
+        "path": "./core.project/core.project.component"
+    },
+    "ng": {
+        "selector": "wiz-core-project",
+        "inputs": [
+            "scope",
+            "menu"
+        ],
+        "outputs": []
+    },
+    "template": "wiz-core-project([scope]=\"\", [menu]=\"\")"
+}

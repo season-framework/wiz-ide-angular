@@ -1,4 +1,3 @@
-import Editor from '@wiz/service/editor';
 import { OnInit, Input } from '@angular/core';
 import toastr from "toastr";
 
@@ -24,7 +23,7 @@ export class Component implements OnInit {
     @Input() scope: any;
     public APP_ID: string = wiz.namespace;
 
-    constructor(private editor: Editor) {
+    constructor() {
     }
 
     public async ngOnInit() {

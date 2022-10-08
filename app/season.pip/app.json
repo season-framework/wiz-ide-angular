@@ -3,5 +3,17 @@
         "id": "season.pip",
         "name": "SeasonPipComponent",
         "path": "./season.pip/season.pip.component"
-    }
+    },
+    "id": "season.pip",
+    "title": "PIP Manager",
+    "category": "app",
+    "ng": {
+        "selector": "wiz-season-pip",
+        "inputs": [
+            "scope",
+            "menu"
+        ],
+        "outputs": []
+    },
+    "template": "wiz-season-pip([scope]=\"\", [menu]=\"\")"
 }

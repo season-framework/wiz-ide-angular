@@ -3,5 +3,16 @@
         "id": "config.shortcuts",
         "name": "ConfigShortcutsComponent",
         "path": "./config.shortcuts/config.shortcuts.component"
-    }
+    },
+    "id": "config.shortcuts",
+    "title": "Shortcuts",
+    "category": "config",
+    "ng": {
+        "selector": "wiz-config-shortcuts",
+        "inputs": [
+            "scope"
+        ],
+        "outputs": []
+    },
+    "template": "wiz-config-shortcuts([scope]=\"\")"
 }

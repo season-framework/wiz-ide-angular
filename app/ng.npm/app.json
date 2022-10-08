@@ -3,5 +3,17 @@
         "id": "ng.npm",
         "name": "NgNpmComponent",
         "path": "./ng.npm/ng.npm.component"
-    }
+    },
+    "id": "ng.npm",
+    "title": "NPM Manager",
+    "category": "app",
+    "ng": {
+        "selector": "wiz-ng-npm",
+        "inputs": [
+            "scope",
+            "menu"
+        ],
+        "outputs": []
+    },
+    "template": "wiz-ng-npm([scope]=\"\", [menu]=\"\")"
 }
