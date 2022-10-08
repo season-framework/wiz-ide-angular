@@ -61,7 +61,7 @@ export class Component implements AfterViewInit {
             monaco: KeyMod.CtrlCmd | KeyCode.KeyP,
             preventDefault: true,
             command: async () => {
-                await this.scope.rightmenu.toggle(this.scope.rightmenu.top[2]);
+                await this.scope.rightmenu.toggle(this.scope.rightmenu.top[0]);
             }
         }, {
             key: ["esc"],
