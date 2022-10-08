@@ -2,8 +2,7 @@ import EditorManager from '@wiz/service/editor';
 import { OnInit, Input } from '@angular/core';
 import toastr from "toastr";
 
-import InfoEditor from "@wiz/app/ng.app.info";
-import PageInfoEditor from "@wiz/app/ng.app.info.page";
+import InfoEditor from "@wiz/app/core.app.info";
 import MonacoEditor from "@wiz/app/season.monaco";
 
 toastr.options = {
@@ -26,7 +25,6 @@ toastr.options = {
 
 export class Component implements OnInit {
     @Input() scope: any;
-    @Input() mode: any;
     @Input() menu: any;
 
     public APP_ID: string = wiz.namespace;
@@ -39,9 +37,7 @@ export class Component implements OnInit {
     }
 
     public async ngOnInit() {
-        if (this.mode == 'page') this.infoEditorClass = PageInfoEditor;
-        else this.infoEditorClass = InfoEditor;
-
+        this.infoEditorClass = InfoEditor;
         await this.load();
     }
 
@@ -60,7 +56,7 @@ export class Component implements OnInit {
                 return true;
 
         if (item.id) {
-            let target = item.id.toLowerCase().substring(this.mode.length);
+            let target = item.id.toLowerCase();
             if (target.toLowerCase().indexOf(this.keyword.toLowerCase()) >= 0) {
                 return true;
             }
@@ -69,7 +65,7 @@ export class Component implements OnInit {
     }
 
     public async load() {
-        let { data } = await wiz.call("list", { mode: this.mode });
+        let { data } = await wiz.call("list", {});
         let apps: any = {};
         let categories: any = [];
         for (let i = 0; i < data.length; i++) {
@@ -109,20 +105,19 @@ export class Component implements OnInit {
         // create tab
         editor.create({ name: 'info', viewref: this.infoEditorClass })
             .bind('data', async (tab) => {
-                return { mode: this.mode, id: '', title: '', namespace: '', viewuri: '', category: '' };
+                return { id: '', title: '', viewuri: '', category: '' };
             }).bind('update', async (tab) => {
                 let data = await tab.data();
-                let check = /^[a-z0-9.]+$/.test(data.namespace);
-                if (!check) return toastr.error("invalidate namespace");
-                if (data.namespace.length < 3) return toastr.error("namespace at least 3 alphabets");
+                let check = /^[a-z0-9.]+$/.test(data.id);
+                if (!check) return toastr.error("invalidate id");
+                if (data.id.length < 3) return toastr.error("id at least 3 alphabets");
 
-                let id = data.mode + "." + data.namespace;
+                let id = data.id;
                 let res = await wiz.call("exists", { id });
-                if (res.data) return toastr.error("namespace already exists");
+                if (res.data) return toastr.error("id already exists");
 
-                data.id = id;
                 data = JSON.stringify(data, null, 4);
-                let path = "app/" + id + "/app.json";
+                let path = "ide/app/" + id + "/app.json";
 
                 editor.close();
                 await wiz.call('update', { path, code: data });
@@ -133,14 +128,13 @@ export class Component implements OnInit {
     }
 
     public async open(app: any, location: number = -1) {
-        let apppath = 'app/' + app.id;
-        let mode = this.mode;
+        let apppath = 'ide/app/' + app.id;
 
         // create editor
         let editor = this.editorManager.create({
             component_id: this.APP_ID,
             path: apppath,
-            title: app.title ? app.title : app.namespace,
+            title: app.title ? app.title : app.id,
             subtitle: app.id,
             current: 1
         });
@@ -153,42 +147,29 @@ export class Component implements OnInit {
         }).bind('data', async (tab) => {
             let { code, data } = await wiz.call('data', { path: tab.path });
             if (code != 200) return {};
+            editor.meta.id = JSON.parse(data).id;
             data = JSON.parse(data);
-            data.mode = mode;
             return data;
         }).bind('update', async (tab) => {
             let data = await tab.data();
-            let viewuri = data.viewuri;
 
-            let check = /^[a-z0-9.]+$/.test(data.namespace);
-            if (!check) return toastr.error("invalidate namespace");
-            if (data.namespace.length < 3) return toastr.error("namespace at least 3 alphabets");
+            let check = /^[a-z0-9.]+$/.test(data.id);
+            if (!check) return toastr.error("invalidate id");
+            if (data.id.length < 3) return toastr.error("id at least 3 alphabets");
 
-            let from = data.id + '';
-            let to = data.mode + "." + data.namespace;
+            let from = editor.meta.id;
+            let to = data.id;
 
             // if moved
             if (from != to) {
-                let res = await wiz.call("move", { from, to });
-                if (res.code == 400) {
-                    toastr.error("invalidate namespace");
-                    return;
-                }
+                toastr.error("ID cannot be changed");
+                return;
             }
 
-            data.id = to
-            editor.modify({ path: 'app/' + to, title: data.title ? data.title : data.namespace, subtitle: to });
-
-            for (let i = 0; i < editor.tabs.length; i++) {
-                let topath: any = editor.tabs[i].path + '';
-                topath = topath.split("/");
-                topath[1] = to;
-                topath = topath.join("/");
-                editor.tabs[i].move(topath);
-            }
+            editor.modify({ title: data.title ? data.title : data.id });
 
             data = JSON.stringify(data, null, 4);
-            await this.update(editor.path + '/app.json', data, from != to, viewuri);
+            await this.update(editor.path + '/app.json', data, from != to);
         });
 
         // monaco editor tabs
@@ -218,21 +199,9 @@ export class Component implements OnInit {
                 config: { monaco: { language: 'typescript', renderValidationDecorations: 'off' } }
             }),
             editor.create({
-                name: 'Directive',
-                viewref: MonacoEditor,
-                path: apppath + "/app.directive.ts",
-                config: { monaco: { language: 'typescript', renderValidationDecorations: 'off' } }
-            }),
-            editor.create({
                 name: 'API',
                 viewref: MonacoEditor,
                 path: apppath + "/api.py",
-                config: { monaco: { language: 'python' } }
-            }),
-            editor.create({
-                name: 'Socket',
-                viewref: MonacoEditor,
-                path: apppath + "/socket.py",
                 config: { monaco: { language: 'python' } }
             })
         ];
@@ -243,10 +212,10 @@ export class Component implements OnInit {
                 editor.meta.info = await editor.tab(0).data();
                 let { code, data } = await wiz.call('data', { path: tab.path });
                 if (code != 200) return {};
-                return { mode, data };
+                return { data };
             }).bind('update', async (tab) => {
                 let data = await tab.data();
-                await this.update(tab.path, data.data, false, editor.meta.info ? editor.meta.info.viewuri : null);
+                await this.update(tab.path, data.data, false);
             });
         }
 

@@ -1,0 +1,8 @@
+{
+    "id": "core.leftmenu.apps",
+    "ng.build": {
+        "id": "core.app.list",
+        "name": "CoreAppListComponent",
+        "path": "./core.app.list/core.app.list.component"
+    }
+}

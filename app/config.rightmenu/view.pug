@@ -5,5 +5,6 @@ wiz-season-pip(*ngIf="menu.mode == 'pip'", [scope]="scope", [menu]="menu")
 wiz-ng-npm(*ngIf="menu.mode == 'npm'", [scope]="scope", [menu]="menu")
 wiz-core-files(*ngIf="menu.mode == 'config'", [scope]="scope", [menu]="menu", [title]="'Config'", [path]="'config'")
 
+wiz-core-app-list(*ngIf="menu.mode == 'system.ide.apps'", [scope]="scope", [menu]="menu")
 wiz-core-system-status(*ngIf="menu.mode == 'system.status'", [scope]="scope", [menu]="menu")
 wiz-core-system-setting(*ngIf="menu.mode == 'system.setting'", [scope]="scope", [menu]="menu")

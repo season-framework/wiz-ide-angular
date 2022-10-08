@@ -1,0 +1,7 @@
+{
+    "ng.build": {
+        "id": "core.app.info",
+        "name": "CoreAppInfoComponent",
+        "path": "./core.app.info/core.app.info.component"
+    }
+}
