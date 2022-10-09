@@ -216,7 +216,7 @@ export class AppComponent implements AfterViewInit {
         obj.binding = this.binding;
         obj.alert = this.alert;
 
-        this.editorManager.bind(obj);
+        this.editorManager.init(obj);
         return obj;
     })();
 

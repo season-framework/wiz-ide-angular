@@ -36,5 +36,15 @@
     td {
         vertical-align: middle;
         word-break: break-all;
+        white-space: nowrap;
+    }
+
+}
+
+.link {
+    cursor: pointer;
+
+    &:hover {
+        color: var(--wiz-color-blue);
     }
 }

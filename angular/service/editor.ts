@@ -63,6 +63,10 @@ export class EditorTab {
     public async update() {
         if (this.event.update) {
             await this.event.update(this);
+
+            if (this.editor.manager.event.updated) {
+                await this.editor.manager.event.updated(this);
+            }
             return;
         }
     }
@@ -296,8 +300,15 @@ export class Manager {
     editable: Array<Editor> = [];
     activated: Editor | null = null;
 
-    public async bind(scope: any) {
+    public async init(scope: any) {
         this.scope = scope;
+    }
+
+    public event: any = {};
+
+    public bind(key: string, fn: any) {
+        this.event[key] = fn;
+        return this;
     }
 
     public create(param = {}) {

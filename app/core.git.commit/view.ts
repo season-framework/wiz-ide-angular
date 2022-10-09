@@ -1,4 +1,6 @@
 import { OnInit, Input } from '@angular/core';
+import EditorManager from '@wiz/service/editor';
+
 import toastr from "toastr";
 toastr.options = {
     "closeButton": false,
@@ -25,16 +27,35 @@ export class Component implements OnInit {
     public APP_ID: string = wiz.namespace;
     public loading: boolean = true;
 
-    public files: any = [];
+    public files: any = { staged: [], unstaged: [] };
     public message: string = '';
+
+    constructor(private editorManager: EditorManager) {
+    }
 
     public async ngOnInit() {
         await this.changes();
+
+        this.editorManager.bind('updated', async () => {
+            await this.changes();
+        });
     }
 
     public async loader(status) {
         this.loading = status;
         await this.scope.render();
+    }
+
+    public async reset(file: string | null = null) {
+        await this.loader(true);
+        await wiz.call("reset", { file: file });
+        await this.changes();
+    }
+
+    public async add(file: string | null = null) {
+        await this.loader(true);
+        await wiz.call("add", { file: file });
+        await this.changes();
     }
 
     public async commit(message: string) {
@@ -48,17 +69,23 @@ export class Component implements OnInit {
         await this.loader(true);
         let { data } = await wiz.call("changes");
 
-        for (let i = 0; i < data.length; i++) {
-            data[i].color = 'bg-secondary';
-            if (data[i].change_type == 'M')
-                data[i].color = 'bg-yellow';
-            if (data[i].change_type == 'R')
-                data[i].color = 'bg-yellow';
-            if (data[i].change_type == 'D')
-                data[i].color = 'bg-red';
-            if (data[i].change_type == 'A')
-                data[i].color = 'bg-green';
+        let parser = (data) => {
+            for (let i = 0; i < data.length; i++) {
+                data[i].color = 'bg-secondary';
+                if (data[i].change_type == 'M')
+                    data[i].color = 'bg-yellow';
+                if (data[i].change_type == 'R')
+                    data[i].color = 'bg-yellow';
+                if (data[i].change_type == 'D')
+                    data[i].color = 'bg-red';
+                if (data[i].change_type == 'A')
+                    data[i].color = 'bg-green';
+            }
+            return data;
         }
+
+        data.staged = parser(data.staged);
+        data.unstaged = parser(data.unstaged);
 
         this.files = data;
         await this.loader(false);
