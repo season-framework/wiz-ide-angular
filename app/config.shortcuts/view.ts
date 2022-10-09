@@ -57,6 +57,41 @@ export class Component implements AfterViewInit {
                     await this.editorManager.activated.close();
             }
         }, {
+            key: ["cmd + 1", "ctrl + 1"],
+            monaco: KeyMod.CtrlCmd | KeyCode.Digit1,
+            preventDefault: true,
+            command: async () => {
+                await this.scope.leftmenu.toggle(this.scope.leftmenu.top[0].id);
+            }
+        }, {
+            key: ["cmd + 2", "ctrl + 2"],
+            monaco: KeyMod.CtrlCmd | KeyCode.Digit2,
+            preventDefault: true,
+            command: async () => {
+                await this.scope.leftmenu.toggle(this.scope.leftmenu.top[1].id);
+            }
+        }, {
+            key: ["cmd + 3", "ctrl + 3"],
+            monaco: KeyMod.CtrlCmd | KeyCode.Digit3,
+            preventDefault: true,
+            command: async () => {
+                await this.scope.leftmenu.toggle(this.scope.leftmenu.top[2].id);
+            }
+        }, {
+            key: ["cmd + 4", "ctrl + 4"],
+            monaco: KeyMod.CtrlCmd | KeyCode.Digit4,
+            preventDefault: true,
+            command: async () => {
+                await this.scope.leftmenu.toggle(this.scope.leftmenu.top[3].id);
+            }
+        }, {
+            key: ["cmd + 5", "ctrl + 5"],
+            monaco: KeyMod.CtrlCmd | KeyCode.Digit5,
+            preventDefault: true,
+            command: async () => {
+                await this.scope.leftmenu.toggle(this.scope.leftmenu.top[4].id);
+            }
+        }, {
             key: ["cmd + p", "ctrl + p"],
             monaco: KeyMod.CtrlCmd | KeyCode.KeyP,
             preventDefault: true,
@@ -78,6 +113,15 @@ export class Component implements AfterViewInit {
                 let target = this.editorManager.activated;
                 let location = this.editorManager.indexOf(target);
                 await target.clone(location + 1);
+            }
+        }, {
+            key: ["alt + m"],
+            monaco: KeyMod.Alt | KeyCode.KeyM,
+            preventDefault: true,
+            command: async () => {
+                if (!this.editorManager.activated) return;
+                let target = this.editorManager.activated;
+                await target.minify();
             }
         });
 

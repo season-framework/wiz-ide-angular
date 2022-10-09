@@ -256,26 +256,24 @@ export class Component implements OnInit {
                 viewref: MonacoEditor,
                 path: apppath + "/view.scss",
                 config: { monaco: { language: 'scss' } }
-            }),
-            editor.create({
-                name: 'Service',
-                viewref: MonacoEditor,
-                path: apppath + "/service.ts",
-                config: { monaco: { language: 'typescript', renderValidationDecorations: 'off' } }
-            }),
-            editor.create({
-                name: 'API',
-                viewref: MonacoEditor,
-                path: apppath + "/api.py",
-                config: { monaco: { language: 'python' } }
-            }),
-            editor.create({
-                name: 'Socket',
-                viewref: MonacoEditor,
-                path: apppath + "/socket.py",
-                config: { monaco: { language: 'python' } }
             })
         ];
+
+        if (mode != 'layout') {
+            tabs.push(
+                editor.create({
+                    name: 'API',
+                    viewref: MonacoEditor,
+                    path: apppath + "/api.py",
+                    config: { monaco: { language: 'python' } }
+                }),
+                editor.create({
+                    name: 'Socket',
+                    viewref: MonacoEditor,
+                    path: apppath + "/socket.py",
+                    config: { monaco: { language: 'python' } }
+                }));
+        }
 
         // bind event to monaco editor tabs
         for (let i = 0; i < tabs.length; i++) {

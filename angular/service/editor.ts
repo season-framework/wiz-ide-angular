@@ -13,7 +13,7 @@ export class EditorTab {
     // configuration for editor view
     public config: any = {
         monaco: {
-            wordWrap: true,
+            wordWrap: false,
             roundedSelection: false,
             scrollBeyondLastLine: true,
             glyphMargin: false,
