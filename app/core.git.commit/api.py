@@ -29,19 +29,23 @@ def add():
 
 def changes():
     res = dict(staged=[], unstaged=[])
-    unstaged = repo.index.diff(None)
-    staged = repo.index.diff("HEAD")
-    
-    for diff in staged:
-        obj = {"change_type": diff.change_type, "path": diff.b_path}        
-        path = obj['path']
-        res['staged'].append(obj)
 
-    for diff in unstaged:
-        obj = {"change_type": diff.change_type, "path": diff.b_path}        
-        path = obj['path']
-        res['unstaged'].append(obj)
+    try:
+        staged = repo.index.diff("HEAD")
+        for diff in staged:
+            obj = {"change_type": diff.change_type, "path": diff.b_path}   
+            path = obj['path']
+            res['staged'].append(obj)
 
+        unstaged = repo.index.diff(None)
+        for diff in unstaged:
+            obj = {"change_type": diff.change_type, "path": diff.b_path}        
+            path = obj['path']
+            res['unstaged'].append(obj)
+
+    except Exception as e:
+        pass
+        
     wiz.response.status(200, res)
 
 def commit():

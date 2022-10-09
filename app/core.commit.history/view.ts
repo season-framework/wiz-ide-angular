@@ -57,7 +57,6 @@ export class Component implements OnInit {
         await this.loader(true);
         let { data } = await wiz.call("history");
         this.commits = data;
-        console.log(data);
         await this.loader(false);
     }
 }
