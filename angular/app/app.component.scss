@@ -75,6 +75,7 @@
                     flex-direction: column;
                     height: 100%;
                     border-left: 1px solid var(--wiz-color-border);
+                    min-width: 620px;
 
                     &:first-child {
                         border-left: none;
@@ -228,7 +229,7 @@
                     display: none;
                     padding: 8px 20px;
                     height: 32px;
-                    margin-top: -22px;
+                    margin-top: -23px;
                     min-width: 80px;
                     background-color: var(--wiz-color-blue);
                     color: #fff;
