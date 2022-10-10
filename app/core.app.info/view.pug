@@ -44,6 +44,10 @@
         .form-group.row(*ngIf="editor.path")
             .col
                 button.btn.btn-outline-blue.btn-block((click)="editor.update()") Update
+        
+        .form-group.row(*ngIf="editor.path")
+            .col
+                button.btn.btn-outline-blue.btn-block((click)="download()") Download
 
         .form-group.row(*ngIf="editor.path")
             .col

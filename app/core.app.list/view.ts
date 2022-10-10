@@ -1,3 +1,5 @@
+import $ from 'jquery';
+
 import EditorManager from '@wiz/service/editor';
 import { OnInit, Input } from '@angular/core';
 import toastr from "toastr";
@@ -236,6 +238,36 @@ export class Component implements OnInit {
         });
 
         await editor.open(location);
+    }
+
+    public async upload_file() {
+        let fn = (fd) => new Promise((resolve) => {
+            let url = wiz.url('upload');
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: fd,
+                cache: false,
+                contentType: false,
+                processData: false
+            }).always(function (res) {
+                resolve(res);
+            });
+        });
+
+        let fd = new FormData($('#file-form-ide')[0]);
+        let { data } = await fn(fd);
+
+        if (data.length > 0) {
+            toastr.error('already exists: ' + data.join(", "));
+        }
+
+        await this.load();
+    }
+
+    public async upload() {
+        await this.scope.render();
+        $('#file-form-ide input').click();
     }
 
 }

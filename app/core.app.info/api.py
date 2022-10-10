@@ -5,15 +5,15 @@ import time
 import shutil
 import datetime
 
-workspace = wiz.workspace("service")
-fs = workspace.fs("src", "app")
+workspace = wiz.workspace("ide")
+fs = workspace.fs("app")
 
 def download(segment):
     app_id = segment.path
     path = fs.abspath(app_id)
 
     if fs.isdir(path):
-        filename = os.path.basename(path) + ".wizapp"
+        filename = os.path.basename(path) + ".wizide"
         zippath = os.path.join(tempfile.gettempdir(), 'wiz', datetime.datetime.now().strftime("%Y%m%d"), str(int(time.time())), filename)
         if len(zippath) < 10: 
             wiz.response.abort(404)

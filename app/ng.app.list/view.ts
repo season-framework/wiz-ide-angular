@@ -1,20 +1,15 @@
+import $ from 'jquery';
+
 const DEFAULT_COMPONENT = `import { OnInit, Input } from '@angular/core';
 
 export class Replacement implements OnInit {
     @Input() title: any;
 
-    constructor() {
-    }
-
     public async ngOnInit() {
     }
 }`.replace('Replacement', 'Component');
 
-const DEFAULT_API = `def status(segment):
-    user = wiz.request.query('user', True)
-    print(segment, user)
-    wiz.response.status(200, 'Message')
-`;
+const DEFAULT_API = ``;
 
 const DEFAULT_SOKCET = `class Controller:
     def __init__(self, server):
@@ -316,6 +311,36 @@ export class Component implements OnInit {
         });
 
         await editor.open(location);
+    }
+
+    public async upload_file() {
+        let fn = (fd) => new Promise((resolve) => {
+            let url = wiz.url('upload');
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: fd,
+                cache: false,
+                contentType: false,
+                processData: false
+            }).always(function (res) {
+                resolve(res);
+            });
+        });
+
+        let fd = new FormData($('#file-form-app')[0]);
+        let { data } = await fn(fd);
+
+        if (data.length > 0) {
+            toastr.error('already exists: ' + data.join(", "));
+        }
+
+        await this.load();
+    }
+
+    public async upload() {
+        await this.scope.render();
+        $('#file-form-app input').click();
     }
 
 }

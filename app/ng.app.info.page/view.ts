@@ -26,4 +26,9 @@ export class Component implements OnInit {
         let { data } = await wiz.app("core.project").call("controllers")
         return data;
     }
+
+    public async download() {
+        let target = wiz.url("download/" + this.data.id);
+        window.open(target, '_blank');
+    }
 }

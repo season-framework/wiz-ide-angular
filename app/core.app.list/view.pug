@@ -1,6 +1,8 @@
 .browser-container
     .browser-search.area-round
         input.form-control.form-control-sm.search-form(type="text" placeholder="Search...", [(ngModel)]="keyword")
+        button.btn.btn-sm.btn-primary.ml-1.pl-3.pr-3((click)="upload()")
+            i.fa-solid.fa-upload
         button.btn.btn-sm.btn-primary.ml-1.pl-3.pr-3((click)="create()")
             i.fa-solid.fa-plus
 
@@ -20,3 +22,7 @@
                         .item-namespace.text-muted {{item.id}}
                     .ml-auto.active-marker
                         i.fa-solid.fa-circle.text-blue(style="font-size: 8px;")
+
+div(style="display: none;")
+    form#file-form-ide
+        input.form-control(type='file', name='file[]', accept=".wizide", (change)="upload_file()", multiple)

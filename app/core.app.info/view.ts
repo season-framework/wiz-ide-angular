@@ -12,4 +12,9 @@ export class Component implements OnInit {
         this.loading = false;
         await this.scope.render();
     }
+
+    public async download() {
+        let target = wiz.url("download/" + this.data.id);
+        window.open(target, '_blank');
+    }
 }

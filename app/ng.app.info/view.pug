@@ -47,6 +47,10 @@
 
         .form-group.row(*ngIf="editor.path")
             .col
+                button.btn.btn-outline-blue.btn-block((click)="download()") Download
+
+        .form-group.row(*ngIf="editor.path")
+            .col
                 button.btn.btn-outline-red.btn-block((click)="editor.delete()") Delete
 
         .form-group.row(*ngIf="!editor.path")
