@@ -16,7 +16,8 @@ export class Component implements OnInit {
             { name: 'Commit History', id: 'commits', icon: 'fa-solid fa-code-branch' },
             { name: 'NPM Package', id: 'npm', icon: 'fa-solid fa-boxes-packing' },
             { name: 'PIP Pacakge', id: 'pip', icon: 'fa-brands fa-python' },
-            { name: 'Config', id: 'config', icon: 'fa-solid fa-cog' }
+            { name: 'Config', id: 'config', icon: 'fa-solid fa-cog' },
+            { name: 'HTML2PUG', id: 'html2pug', icon: 'fa-brands fa-html5' }
         ], [
             { name: 'IDE Apps', id: 'system.ide.apps', icon: 'fa-solid fa-plug', width: 280 },
             { name: 'System Setting', id: 'system.setting', icon: 'fa-solid fa-wrench', width: 280 },
