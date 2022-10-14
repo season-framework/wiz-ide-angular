@@ -1,7 +1,10 @@
 .side-container
-    .side-heading
+    .side-heading.area-round
         h3.nowrap.m-0(style="max-width: 220px; overflow: hidden; text-overflow: ellipsis;")
             span Commit
+        .ml-auto
+        .btn.btn-sm.btn-primary((click)="add()")
+            i.fa-solid.fa-refresh
 
     .side-commit
         textarea.form-control(type="text" placeholder="Commit message", [(ngModel)]="message", rows=5)

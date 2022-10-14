@@ -164,7 +164,7 @@ def add():
     gitfile = wiz.request.query("file", None)
     try:
         if gitfile is None or len(gitfile) == 0:
-            repo.git.add(update=True)
+            repo.git.add('--all')
         else:
             repo.git.add(gitfile, update=True)
     except:
@@ -175,15 +175,20 @@ def changes():
     res = dict(staged=[], unstaged=[])
 
     try:
+        tags = repo.commit('HEAD').diff(None)
+        fmap = dict()
+        for diff in tags:
+            fmap[diff.b_path] = diff.change_type
+
         staged = repo.index.diff("HEAD")
         for diff in staged:
-            obj = {"change_type": diff.change_type, "path": diff.b_path}   
+            obj = {"change_type": fmap[diff.b_path], "path": diff.b_path}   
             path = obj['path']
             res['staged'].append(obj)
 
         unstaged = repo.index.diff(None)
         for diff in unstaged:
-            obj = {"change_type": diff.change_type, "path": diff.b_path}        
+            obj = {"change_type": fmap[diff.b_path], "path": diff.b_path}        
             path = obj['path']
             res['unstaged'].append(obj)
     except Exception as e:

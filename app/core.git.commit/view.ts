@@ -39,6 +39,8 @@ export class Component implements OnInit {
         this.editorManager.bind('updated', async () => {
             await this.changes();
         });
+
+        await this.add();
     }
 
     public async loader(status) {
