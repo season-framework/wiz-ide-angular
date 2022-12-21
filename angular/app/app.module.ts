@@ -5,9 +5,9 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { NuMonacoEditorModule } from '@ng-util/monaco-editor';
 import { KeyboardShortcutsModule } from 'ng-keyboard-shortcuts';
-import { NgxLoadingModule, ngxLoadingAnimationTypes } from "ngx-loading";
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { SortablejsModule } from '@wiz/libs/ngx-sortablejs';
+import { NgxLoadingModule, ngxLoadingAnimationTypes } from "@wiz/libs/ngx-loading";
 
 @NgModule({
     declarations: [
