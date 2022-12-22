@@ -20,9 +20,6 @@
         "@angular/platform-browser": "^15.0.4",
         "@angular/platform-browser-dynamic": "^15.0.4",
         "@angular/router": "^15.0.4",
-        "rxjs": "~7.5.0",
-        "tslib": "^2.3.0",
-        "zone.js": "~0.11.4",
         "@fortawesome/fontawesome-free": "^6.2.0",
         "@ng-bootstrap/ng-bootstrap": "^14.0.0",
         "@ng-util/monaco-editor": "^14.0.0",
@@ -37,9 +34,16 @@
         "ng-monaco-editor": "^5.0.3",
         "ngc-esbuild": "^0.0.75",
         "pug": "^3.0.2",
+        "rxjs": "~7.5.0",
         "socket.io-client": "^4.5.2",
         "sortablejs": "^1.15.0",
-        "toastr": "^2.1.4"
+        "toastr": "^2.1.4",
+        "tslib": "^2.3.0",
+        "xterm": "^5.1.0",
+        "xterm-addon-fit": "^0.6.0",
+        "xterm-addon-search": "^0.10.0",
+        "xterm-addon-web-links": "^0.8.0",
+        "zone.js": "~0.11.4"
     },
     "devDependencies": {
         "@angular-devkit/build-angular": "^15.0.4",

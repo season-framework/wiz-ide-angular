@@ -19,6 +19,7 @@ export class Component implements OnInit {
             { name: 'Config', id: 'config', icon: 'fa-solid fa-cog' },
             { name: 'HTML2PUG', id: 'html2pug', icon: 'fa-brands fa-html5' }
         ], [
+            { name: 'Terminal', id: 'xterm', icon: 'fa-solid fa-terminal', width: 721 },
             { name: 'IDE Apps', id: 'system.ide.apps', icon: 'fa-solid fa-plug', width: 280 },
             { name: 'System Setting', id: 'system.setting', icon: 'fa-solid fa-wrench', width: 280 },
             { name: 'System Status', id: 'system.status', icon: 'fa-solid fa-heart-pulse', width: 280 }

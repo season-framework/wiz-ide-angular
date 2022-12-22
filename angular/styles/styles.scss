@@ -42,6 +42,10 @@ body {
     position: absolute;
 }
 
+.xterm, .xterm-screen {
+    height: 100% !important;
+}
+
 @import "components/base";
 @import "components/btn";
 @import "components/form";

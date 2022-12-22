@@ -203,6 +203,12 @@ export class Component implements OnInit {
                 viewref: MonacoEditor,
                 path: apppath + "/api.py",
                 config: { monaco: { language: 'python' } }
+            }),
+            editor.create({
+                name: 'Socket',
+                viewref: MonacoEditor,
+                path: apppath + "/socket.py",
+                config: { monaco: { language: 'python' } }
             })
         ];
 
