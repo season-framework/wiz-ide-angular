@@ -1,4 +1,6 @@
-import { OnInit, Input } from '@angular/core';
+import { OnInit } from '@angular/core';
+import { Service } from '@wiz/service/service';
+
 import toastr from "toastr";
 
 toastr.options = {
@@ -20,11 +22,9 @@ toastr.options = {
 };
 
 export class Component implements OnInit {
-    @Input() scope: any;
     public APP_ID: string = wiz.namespace;
 
-    constructor() {
-    }
+    constructor(public service: Service) { }
 
     public async ngOnInit() {
         await this.branch.load();
@@ -40,14 +40,14 @@ export class Component implements OnInit {
         obj.load = async () => {
             let { code, data } = await wiz.call("branches");
             obj.data = data;
-            await this.scope.render();
+            await this.service.render();
         }
 
         return obj;
     })();
 
     public async clean() {
-        await this.scope.loading.show();
+        await this.service.loading.show();
         try {
             let { code, data } = await wiz.call("clean");
             if (code == 200) {
@@ -59,7 +59,7 @@ export class Component implements OnInit {
             toastr.error("Error");
         }
 
-        await this.scope.loading.hide();
+        await this.service.loading.hide();
     }
 
 }

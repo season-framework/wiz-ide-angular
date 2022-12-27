@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import Service from './service';
 
 export class EditorTab {
     public editor: Editor;
@@ -191,9 +191,9 @@ export class Editor {
     public async select(current: number) {
         let manager = this.manager;
         this.current = null;
-        await manager.scope.render();
+        await manager.service.render();
         this.current = current;
-        await manager.scope.render();
+        await manager.service.render();
     }
 
     // editor events
@@ -265,7 +265,7 @@ export class Editor {
         if (this.event.close)
             await this.event.close(...arguments);
 
-        await manager.scope.render();
+        await manager.service.render();
     }
 
     public async activate() {
@@ -276,7 +276,7 @@ export class Editor {
             manager.editable.push(this);
         }
         manager.activated = this;
-        await manager.scope.render();
+        await manager.service.render();
     }
 
     public async minify() {
@@ -284,27 +284,22 @@ export class Editor {
         let location = manager.editable.indexOf(this);
         if (location > -1) manager.editable.splice(location, 1);
         manager.minified.push(this);
-        await manager.scope.render();
+        await manager.service.render();
     }
 }
 
-@Injectable({ providedIn: 'root' })
 export class Manager {
     Tab = EditorTab;
     Editor = Editor;
 
-    scope: any;
     tabcached: any = {};
     files: any = {};
     minified: Array<Editor> = [];
     editable: Array<Editor> = [];
     activated: Editor | null = null;
+    event: any = {};
 
-    public async init(scope: any) {
-        this.scope = scope;
-    }
-
-    public event: any = {};
+    constructor(public service: Service) { }
 
     public bind(key: string, fn: any) {
         this.event[key] = fn;
@@ -342,6 +337,12 @@ export class Manager {
         }
 
         return result;
+    }
+
+    public async update() {
+        let current_app = this.activated;
+        if (!current_app) return;
+        await current_app.update();
     }
 
     public indexOf(item: Editor) {

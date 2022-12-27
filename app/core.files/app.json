@@ -10,12 +10,10 @@
     "ng": {
         "selector": "wiz-core-files",
         "inputs": [
-            "scope",
-            "menu",
             "title",
             "path"
         ],
         "outputs": []
     },
-    "template": "wiz-core-files([scope]=\"\", [menu]=\"\", [title]=\"\", [path]=\"\")"
+    "template": "wiz-core-files([title]=\"\", [path]=\"\")"
 }

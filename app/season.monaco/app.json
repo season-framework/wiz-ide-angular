@@ -10,10 +10,9 @@
     "ng": {
         "selector": "wiz-season-monaco",
         "inputs": [
-            "scope",
             "editor"
         ],
         "outputs": []
     },
-    "template": "wiz-season-monaco([scope]=\"\", [editor]=\"\")"
+    "template": "wiz-season-monaco([editor]=\"\")"
 }

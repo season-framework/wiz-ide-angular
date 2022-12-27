@@ -1,5 +1,5 @@
-import EditorManager from '@wiz/service/editor';
-import { OnInit, Input } from '@angular/core';
+import { OnInit } from '@angular/core';
+import { Service } from '@wiz/service/service';
 import toastr from "toastr";
 
 import InfoEditor from "@wiz/app/season.route.info";
@@ -24,29 +24,27 @@ toastr.options = {
 };
 
 export class Component implements OnInit {
-    @Input() scope: any;
-
     public APP_ID: string = wiz.namespace;
     public keyword: string = "";
     public categories: Array<string> = [];
     public routes: any = {};
 
-    constructor(private editorManager: EditorManager) {
+    constructor(private service: Service) {
     }
 
     public async ngOnInit() {
         await this.load();
     }
 
-    public active(item: EditorManager.Editor) {
-        let em = this.editorManager;
+    public active(item: any) {
+        let em = this.service.editor;
         if (!em.activated) return '';
         if (this.APP_ID != em.activated.component_id) return '';
         if (item.id != em.activated.meta.id) return '';
         return 'active';
     }
 
-    public match(item: EditorManager.Editor) {
+    public match(item: any) {
         if (!this.keyword) return true;
         if (item.title && item.title.toLowerCase().indexOf(this.keyword.toLowerCase()) >= 0) {
             return true;
@@ -76,7 +74,7 @@ export class Component implements OnInit {
         this.routes = apps;
         this.categories = categories;
 
-        await this.scope.render();
+        await this.service.render();
     }
 
     private async update(path: string, data: string, viewuri: string | null = null) {
@@ -84,13 +82,13 @@ export class Component implements OnInit {
         if (res.code == 200) toastr.success("Updated");
         await this.load();
         if (!viewuri) return;
-        let binding = this.scope.binding.load("season.preview");
+        let binding = this.service.event.load("season.preview");
         if (binding) await binding.move(viewuri);
     }
 
     public async create() {
         // create editor
-        let editor = this.editorManager.create({ component_id: this.APP_ID, title: 'New' });
+        let editor = this.service.editor.create({ component_id: this.APP_ID, title: 'New' });
 
         // create tab
         editor.create({ name: 'info', viewref: InfoEditor })
@@ -120,7 +118,7 @@ export class Component implements OnInit {
     public async open(app: any, location: number = -1) {
         let routepath = 'route/' + app.id;
 
-        let editor = this.editorManager.create({
+        let editor = this.service.editor.create({
             component_id: this.APP_ID,
             path: routepath,
             title: app.title ? app.title : app.id,
@@ -190,10 +188,10 @@ export class Component implements OnInit {
         });
 
         editor.bind("delete", async () => {
-            let res = await this.scope.alert.show({ title: 'Delete Route', message: 'Are you sure remove "' + editor.route + '"?', action_text: "Delete", action_class: "btn-danger" });
+            let res = await this.service.alert.show({ title: 'Delete Route', message: 'Are you sure remove "' + editor.route + '"?', action_text: "Delete", action_class: "btn-danger" });
             if (res !== true) return;
 
-            let targets = await this.editorManager.find(editor);
+            let targets = await this.service.editor.find(editor);
             for (let i = 0; i < targets.length; i++)
                 await targets[i].close();
             await wiz.call("remove", { path: editor.path });

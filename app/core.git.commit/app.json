@@ -10,11 +10,8 @@
     },
     "ng": {
         "selector": "wiz-core-git-commit",
-        "inputs": [
-            "scope",
-            "menu"
-        ],
+        "inputs": [],
         "outputs": []
     },
-    "template": "wiz-core-git-commit([scope]=\"\", [menu]=\"\")"
+    "template": "wiz-core-git-commit()"
 }

@@ -1,12 +1,11 @@
-import { OnInit, Input } from '@angular/core';
+import { OnInit } from '@angular/core';
+import { Service } from '@wiz/service/service';
 
 export class Component implements OnInit {
-    @Input() scope: any;
-    @Input() menu: any;
-
     public APP_ID: string = wiz.namespace;
 
     public data: string = '';
+    public pug: any = "";
 
     public monaco: any = {
         language: 'html',
@@ -34,12 +33,12 @@ export class Component implements OnInit {
         minimap: { enabled: false }
     }
 
-    constructor() { }
+    constructor(public service: Service) { }
 
     public async convert() {
         let { data } = await wiz.call("html2pug", { html: this.data });
         this.pug = data;
-        await this.scope.render();
+        await this.service.render();
     }
 
 }

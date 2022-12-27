@@ -9,13 +9,10 @@
     "category": "app",
     "ng": {
         "selector": "wiz-season-preview",
-        "inputs": [
-            "scope",
-            "menu"
-        ],
+        "inputs": [],
         "outputs": [
             "binding"
         ]
     },
-    "template": "wiz-season-preview([scope]=\"\", [menu]=\"\", (binding)=\"\")"
+    "template": "wiz-season-preview((binding)=\"\")"
 }

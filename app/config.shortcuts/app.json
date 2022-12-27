@@ -9,10 +9,8 @@
     "category": "config",
     "ng": {
         "selector": "wiz-config-shortcuts",
-        "inputs": [
-            "scope"
-        ],
+        "inputs": [],
         "outputs": []
     },
-    "template": "wiz-config-shortcuts([scope]=\"\")"
+    "template": "wiz-config-shortcuts()"
 }

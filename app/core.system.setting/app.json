@@ -9,11 +9,8 @@
     "category": "app",
     "ng": {
         "selector": "wiz-core-system-setting",
-        "inputs": [
-            "scope",
-            "menu"
-        ],
+        "inputs": [],
         "outputs": []
     },
-    "template": "wiz-core-system-setting([scope]=\"\", [menu]=\"\")"
+    "template": "wiz-core-system-setting()"
 }

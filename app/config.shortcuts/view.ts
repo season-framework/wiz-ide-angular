@@ -1,14 +1,11 @@
-import { AfterViewInit, Input } from '@angular/core';
+import { AfterViewInit } from '@angular/core';
 import { KeyMod, KeyCode } from 'monaco-editor';
-import EditorManager from '@wiz/service/editor';
+import { Service } from '@wiz/service/service';
 
 export class Component implements AfterViewInit {
-    @Input() scope;
-
     public shortcuts: any = [];
 
-    constructor(private editorManager: EditorManager) {
-    }
+    constructor(public service: Service) { }
 
     public async ngAfterViewInit() {
         this.shortcuts.push({
@@ -16,15 +13,15 @@ export class Component implements AfterViewInit {
             monaco: KeyMod.CtrlCmd | KeyCode.KeyS,
             preventDefault: true,
             command: async () => {
-                await this.scope.update();
+                await this.service.editor.update();
             }
         }, {
             key: ["alt + a"],
             monaco: KeyMod.Alt | KeyCode.KeyA,
             preventDefault: true,
             command: async () => {
-                if (!this.editorManager.activated) return;
-                let target = this.editorManager.activated;
+                if (!this.service.editor.activated) return;
+                let target = this.service.editor.activated;
                 let current = target.current * 1;
                 if (target.tabs[current - 1]) {
                     current = target.current - 1;
@@ -38,8 +35,8 @@ export class Component implements AfterViewInit {
             monaco: KeyMod.Alt | KeyCode.KeyS,
             preventDefault: true,
             command: async () => {
-                if (!this.editorManager.activated) return;
-                let target = this.editorManager.activated;
+                if (!this.service.editor.activated) return;
+                let target = this.service.editor.activated;
                 let current = target.current * 1;
                 if (target.tabs[current + 1]) {
                     current = target.current + 1;
@@ -53,65 +50,65 @@ export class Component implements AfterViewInit {
             monaco: KeyMod.Alt | KeyCode.KeyW,
             preventDefault: true,
             command: async () => {
-                if (this.editorManager.activated)
-                    await this.editorManager.activated.close();
+                if (this.service.editor.activated)
+                    await this.service.editor.activated.close();
             }
         }, {
             key: ["cmd + 1", "ctrl + 1"],
             monaco: KeyMod.CtrlCmd | KeyCode.Digit1,
             preventDefault: true,
             command: async () => {
-                await this.scope.leftmenu.toggle(this.scope.leftmenu.top[0].id);
+                await this.service.leftmenu.toggle(this.service.leftmenu.top[0].id);
             }
         }, {
             key: ["cmd + 2", "ctrl + 2"],
             monaco: KeyMod.CtrlCmd | KeyCode.Digit2,
             preventDefault: true,
             command: async () => {
-                await this.scope.leftmenu.toggle(this.scope.leftmenu.top[1].id);
+                await this.service.leftmenu.toggle(this.service.leftmenu.top[1].id);
             }
         }, {
             key: ["cmd + 3", "ctrl + 3"],
             monaco: KeyMod.CtrlCmd | KeyCode.Digit3,
             preventDefault: true,
             command: async () => {
-                await this.scope.leftmenu.toggle(this.scope.leftmenu.top[2].id);
+                await this.service.leftmenu.toggle(this.service.leftmenu.top[2].id);
             }
         }, {
             key: ["cmd + 4", "ctrl + 4"],
             monaco: KeyMod.CtrlCmd | KeyCode.Digit4,
             preventDefault: true,
             command: async () => {
-                await this.scope.leftmenu.toggle(this.scope.leftmenu.top[3].id);
+                await this.service.leftmenu.toggle(this.service.leftmenu.top[3].id);
             }
         }, {
             key: ["cmd + 5", "ctrl + 5"],
             monaco: KeyMod.CtrlCmd | KeyCode.Digit5,
             preventDefault: true,
             command: async () => {
-                await this.scope.leftmenu.toggle(this.scope.leftmenu.top[4].id);
+                await this.service.leftmenu.toggle(this.service.leftmenu.top[4].id);
             }
         }, {
             key: ["cmd + p", "ctrl + p"],
             monaco: KeyMod.CtrlCmd | KeyCode.KeyP,
             preventDefault: true,
             command: async () => {
-                await this.scope.rightmenu.toggle(this.scope.rightmenu.top[0]);
+                await this.service.rightmenu.toggle(this.service.rightmenu.top[0]);
             }
         }, {
             key: ["esc"],
             preventDefault: true,
             command: async () => {
-                await this.scope.rightmenu.toggle();
+                await this.service.rightmenu.toggle();
             }
         }, {
             key: ["alt + t"],
             monaco: KeyMod.Alt | KeyCode.KeyT,
             preventDefault: true,
             command: async () => {
-                if (!this.editorManager.activated) return;
-                let target = this.editorManager.activated;
-                let location = this.editorManager.indexOf(target);
+                if (!this.service.editor.activated) return;
+                let target = this.service.editor.activated;
+                let location = this.service.editor.indexOf(target);
                 await target.clone(location + 1);
             }
         }, {
@@ -119,14 +116,15 @@ export class Component implements AfterViewInit {
             monaco: KeyMod.Alt | KeyCode.KeyM,
             preventDefault: true,
             command: async () => {
-                if (!this.editorManager.activated) return;
-                let target = this.editorManager.activated;
+                if (!this.service.editor.activated) return;
+                let target = this.service.editor.activated;
                 await target.minify();
             }
         });
 
         for (let i = 0; i < this.shortcuts.length; i++)
             this.shortcuts[i].allowIn = ['TEXTAREA', 'INPUT', 'SELECT'];
-        this.scope.shortcuts = this.shortcuts;
+
+        this.service.shortcuts = this.shortcuts;
     }
 }

@@ -1,4 +1,6 @@
-import { OnInit, Input } from '@angular/core';
+import { OnInit } from '@angular/core';
+import { Service } from '@wiz/service/service';
+
 import toastr from "toastr";
 import moment from "moment";
 
@@ -21,13 +23,12 @@ toastr.options = {
 };
 
 export class Component implements OnInit {
-    @Input() scope: any;
-    @Input() menu: any;
-
     public APP_ID: string = wiz.namespace;
     public loading: boolean = true;
 
     public commits: any = [];
+
+    constructor(public service: Service) { }
 
     public async ngOnInit() {
         await this.load();
@@ -50,7 +51,7 @@ export class Component implements OnInit {
 
     public async loader(status) {
         this.loading = status;
-        await this.scope.render();
+        await this.service.render();
     }
 
     public async load() {

@@ -9,10 +9,8 @@
     "category": "core",
     "ng": {
         "selector": "wiz-core-topmenu",
-        "inputs": [
-            "scope"
-        ],
+        "inputs": [],
         "outputs": []
     },
-    "template": "wiz-core-topmenu([scope]=\"\")"
+    "template": "wiz-core-topmenu()"
 }

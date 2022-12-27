@@ -1,11 +1,13 @@
 import { OnInit, Input } from '@angular/core';
+import { Service } from '@wiz/service/service';
 
 export class Component implements OnInit {
-    @Input() scope;
     @Input() editor;
 
     public loading: boolean = true;
     public data: any = {};
+
+    constructor(public service: Service) { }
 
     public async ngOnInit() {
         await this.loader(true);
@@ -15,7 +17,7 @@ export class Component implements OnInit {
 
     public async loader(status) {
         this.loading = status;
-        await this.scope.render();
+        await this.service.render();
     }
 
     private monacoRecommend() {
@@ -225,8 +227,8 @@ export class Component implements OnInit {
 
     public async init(e) {
         let editor = this.editor;
-        for (let i = 0; i < this.scope.shortcuts.length; i++) {
-            let shortcut = this.scope.shortcuts[i];
+        for (let i = 0; i < this.service.shortcuts.length; i++) {
+            let shortcut = this.service.shortcuts[i];
             e.editor.addCommand(shortcut.monaco, shortcut.command);
         }
         if (!window.monacoWIZRecommend) {

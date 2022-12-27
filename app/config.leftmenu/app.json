@@ -10,11 +10,9 @@
     "ng": {
         "selector": "wiz-config-leftmenu",
         "inputs": [
-            "scope",
-            "menu",
-            "binding"
+            "menu"
         ],
         "outputs": []
     },
-    "template": "wiz-config-leftmenu([scope]=\"\", [menu]=\"\", [binding]=\"\")"
+    "template": "wiz-config-leftmenu([menu]=\"\")"
 }

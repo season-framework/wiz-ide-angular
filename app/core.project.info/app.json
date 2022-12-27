@@ -11,10 +11,9 @@
     "ng": {
         "selector": "wiz-core-project-info",
         "inputs": [
-            "scope",
             "editor"
         ],
         "outputs": []
     },
-    "template": "wiz-core-project-info([scope]=\"\", [editor]=\"\")"
+    "template": "wiz-core-project-info([editor]=\"\")"
 }

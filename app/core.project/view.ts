@@ -142,10 +142,12 @@ dmypy.json
 cython_debug/
 `;
 
-import { OnInit, Input } from '@angular/core';
+import { OnInit } from '@angular/core';
+import { Service } from '@wiz/service/service';
+
 import toastr from "toastr";
 import $ from 'jquery';
-import EditorManager from '@wiz/service/editor';
+
 import MonacoEditor from "@wiz/app/season.monaco";
 import ProjectInfo from "@wiz/app/core.project.info";
 
@@ -168,16 +170,13 @@ toastr.options = {
 };
 
 export class Component implements OnInit {
-    @Input() scope: any;
-    @Input() menu: any;
-
     public APP_ID: string = wiz.namespace;
     public current: string = wiz.branch();
     public keyword: string = "";
     public loading: boolean = false;
     public data: any = [];
 
-    constructor(private editorManager: EditorManager) {
+    constructor(private service: Service) {
     }
 
     public async ngOnInit() {
@@ -194,7 +193,7 @@ export class Component implements OnInit {
 
     public async loader(status) {
         this.loading = status;
-        await this.scope.render();
+        await this.service.render();
     }
 
     public match(item: any) {
@@ -278,7 +277,7 @@ export class Component implements OnInit {
         let path = item.id;
         await wiz.call("git", { path });
 
-        let editor = this.editorManager.create({
+        let editor = this.service.editor.create({
             component_id: this.APP_ID,
             path: '/project/' + path,
             title: 'Project',

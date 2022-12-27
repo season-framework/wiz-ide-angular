@@ -1,5 +1,5 @@
-import EditorManager from '@wiz/service/editor';
-import { OnInit, Input } from '@angular/core';
+import { OnInit } from '@angular/core';
+import { Service } from '@wiz/service/service';
 import toastr from "toastr";
 import MonacoEditor from "@wiz/app/season.monaco";
 
@@ -22,20 +22,17 @@ toastr.options = {
 };
 
 export class Component implements OnInit {
-    @Input() scope: any;
-
     public APP_ID: string = wiz.namespace;
     public items: any = [];
 
-    constructor(private editorManager: EditorManager) {
-    }
+    constructor(public service: Service) { }
 
     public async ngOnInit() {
         await this.load();
     }
 
-    public active(item: EditorManager.Editor) {
-        let em = this.editorManager;
+    public active(item: any) {
+        let em = this.service.editor;
         if (!em.activated) return '';
         if (this.APP_ID != em.activated.component_id) return '';
         if (item.path != em.activated.path) return '';
@@ -64,7 +61,7 @@ export class Component implements OnInit {
             }
         ];
 
-        await this.scope.render();
+        await this.service.render();
     }
 
     private async update(path: string, data: string) {
@@ -77,7 +74,7 @@ export class Component implements OnInit {
     }
 
     public async open(item: any) {
-        let editor = this.editorManager.create({
+        let editor = this.service.editor.create({
             component_id: this.APP_ID,
             path: item.path,
             title: item.title,

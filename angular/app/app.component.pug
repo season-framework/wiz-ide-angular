@@ -1,7 +1,4 @@
 .workspace
-    .d-none
-        #dummy-modal-click((click)="alert.cache()")
-
     .workspace-header.area-round
         .workspace-title
             img.m-0(src="assets/logo.png")
@@ -17,32 +14,32 @@
                 h2.page-title @wiz.title
 
             .col-auto.actions.if-desktop
-                wiz-core-topmenu([scope]="scope")
+                wiz-core-topmenu
 
     .workspace-body
         .workspace-leftmenu
-            .d-block(*ngFor="let item of leftmenu.top")
-                .btn((click)="leftmenu.toggle(item.id)", [ngClass]="leftmenu.mode == item.id ? 'active' : ''")
+            .d-block(*ngFor="let item of service.leftmenu.top")
+                .btn((click)="service.leftmenu.toggle(item)", [ngClass]="service.leftmenu.isActive(item.id)")
                     i(class="{{ item.icon }}")
                     .hover-area
                         .sidemenu-icon
                             i(class="{{ item.icon }}")
                         span {{ item.name }}
             .mt-auto
-            .d-block(*ngFor="let item of leftmenu.bottom")
-                .btn((click)="leftmenu.toggle(item.id)", [ngClass]="leftmenu.mode == item.id ? 'active' : ''")
+            .d-block(*ngFor="let item of service.leftmenu.bottom")
+                .btn((click)="service.leftmenu.toggle(item)", [ngClass]="service.leftmenu.isActive(item.id)")
                     i(class="{{ item.icon }}")
                     .hover-area
                         .sidemenu-icon
                             i(class="{{ item.icon }}")
                         span {{ item.name }}
 
-        .workspace-leftapp.area-round(*ngIf="leftmenu.mode")
-            wiz-config-leftmenu([scope]="scope", [menu]="leftmenu", [binding]="binding")
+        .workspace-leftapp.area-round(*ngIf="service.leftmenu.mode")
+            wiz-config-leftmenu([menu]="service.leftmenu")
 
         .workspace-editor
-            .editor-list([sortablejs]="editorManager.editable", [sortablejsOptions]="{ animation: 150, handle: '.editor-header' }")
-                .editor-body(*ngFor="let item of editorManager.editable", [ngClass]="editorManager.activated && item.id == editorManager.activated.id ? 'active' : ''", (click)="item.activate()")
+            .editor-list([sortablejs]="service.editor.editable", [sortablejsOptions]="{ animation: 150, handle: '.editor-header' }")
+                .editor-body(*ngFor="let item of service.editor.editable", [ngClass]="service.editor.activated && item.id == service.editor.activated.id ? 'active' : ''", (click)="item.activate()")
                     .editor-header 
                         .header-text
                             span {{item.title}}
@@ -58,32 +55,34 @@
                         
                     .editor-container(*ngIf="item.tab()")
                         .editor-overlay
-                        wiz-core-editor([scope]="scope", [editor]="item")
+                        wiz-core-editor([editor]="item")
 
-            .editor-minified(*ngIf="editorManager.minified.length > 0")
+            .editor-minified(*ngIf="service.editor.minified.length > 0")
                 .minified-padding
-                .minified-item(*ngFor="let item of editorManager.minified", (click)="item.activate()") 
+                .minified-item(*ngFor="let item of service.editor.minified", (click)="item.activate()") 
                     span {{item.title}}
 
-        .workspace-rightapp(*ngIf="rightmenu.mode", style="width: {{ rightmenu.width }}px;")
-            wiz-config-rightmenu([scope]="scope", [menu]="rightmenu", [binding]="binding")
+        .workspace-rightapp(*ngIf="service.rightmenu.mode", style="width: {{ service.rightmenu.width ? service.rightmenu.width : 360 }}px;")
+            wiz-config-rightmenu([menu]="service.rightmenu")
 
         .workspace-rightmenu
-            .d-block(*ngFor="let item of rightmenu.top")
-                .btn((click)="rightmenu.toggle(item)", [ngClass]="rightmenu.mode == item.id ? 'active' : ''")
+            .d-block(*ngFor="let item of service.rightmenu.top")
+                .btn((click)="service.rightmenu.toggle(item)", [ngClass]="service.rightmenu.isActive(item.id)")
                     i(class="{{ item.icon }}")
                     .hover-area
                         span {{ item.name }}
                         .sidemenu-icon
                             i(class="{{ item.icon }}")
             .mt-auto
-            .d-block(*ngFor="let item of rightmenu.bottom")
-                .btn((click)="rightmenu.toggle(item)", [ngClass]="rightmenu.mode == item.id ? 'active' : ''")
+            .d-block(*ngFor="let item of service.rightmenu.bottom")
+                .btn((click)="service.rightmenu.toggle(item)", [ngClass]="service.rightmenu.isActive(item.id)")
                     i(class="{{ item.icon }}")
                     .hover-area
                         span {{ item.name }}
                         .sidemenu-icon
                             i(class="{{ item.icon }}")
 
-    wiz-config-shortcuts([scope]="scope")
-    ngx-loading([show]="loading.status")
+    wiz-config-shortcuts
+
+ngx-loading([show]="service.loading.isshow")
+wiz-core-alert([model]="service.alert")

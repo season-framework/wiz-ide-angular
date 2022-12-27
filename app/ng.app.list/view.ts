@@ -35,8 +35,8 @@ const DEFAULT_SOKCET = `class Controller:
         sid = flask.request.sid
 `;
 
-import EditorManager from '@wiz/service/editor';
 import { OnInit, Input } from '@angular/core';
+import { Service } from '@wiz/service/service';
 import toastr from "toastr";
 
 import InfoEditor from "@wiz/app/ng.app.info";
@@ -62,9 +62,7 @@ toastr.options = {
 };
 
 export class Component implements OnInit {
-    @Input() scope: any;
     @Input() mode: any;
-    @Input() menu: any;
 
     public APP_ID: string = wiz.namespace;
     public keyword: string = "";
@@ -72,8 +70,7 @@ export class Component implements OnInit {
     public apps: any = {};
     public infoEditorClass: any;
 
-    constructor(private editorManager: EditorManager) {
-    }
+    constructor(private service: Service) { }
 
     public async ngOnInit() {
         if (this.mode == 'page') this.infoEditorClass = PageInfoEditor;
@@ -86,8 +83,8 @@ export class Component implements OnInit {
         event.dataTransfer.setData("text", item.template ? item.template : '');
     }
 
-    public active(item: EditorManager.Editor) {
-        let em = this.editorManager;
+    public active(item: any) {
+        let em = this.service.editor;
         if (!em.activated) return '';
         if (this.APP_ID != em.activated.component_id) return '';
         if (item.id != em.activated.subtitle) return '';
@@ -126,9 +123,9 @@ export class Component implements OnInit {
         }
 
         this.apps = apps;
-        this.categories = categories;
+        this.categories = categories.sort();
 
-        await this.scope.render();
+        await this.service.render();
     }
 
     private async update(path: string, data: string, entire: boolean = false, viewuri: string | null = null) {
@@ -139,13 +136,13 @@ export class Component implements OnInit {
         if (res.code == 200) toastr.info("Build Finish");
         else toastr.error("Error on build");
         if (!viewuri) return;
-        let binding = this.scope.binding.load("season.preview");
+        let binding = this.service.event.load("season.preview");
         if (binding) await binding.move(viewuri);
     }
 
     public async create() {
         // create editor
-        let editor = this.editorManager.create({ component_id: this.APP_ID, title: 'New' });
+        let editor = this.service.editor.create({ component_id: this.APP_ID, title: 'New' });
 
         // create tab
         editor.create({ name: 'info', viewref: this.infoEditorClass })
@@ -178,7 +175,7 @@ export class Component implements OnInit {
         let mode = this.mode;
 
         // create editor
-        let editor = this.editorManager.create({
+        let editor = this.service.editor.create({
             component_id: this.APP_ID,
             path: apppath,
             title: app.title ? app.title : app.namespace,
@@ -294,10 +291,10 @@ export class Component implements OnInit {
 
         // bind editor delete event
         editor.bind("delete", async () => {
-            let res = await this.scope.alert.show({ title: 'Delete App', message: 'Are you sure remove "' + editor.title + '"?', action_text: "Delete", action_class: "btn-danger" });
+            let res = await this.service.alert.show({ title: 'Delete App', message: 'Are you sure remove "' + editor.title + '"?', action_text: "Delete", action_class: "btn-danger" });
             if (res !== true) return;
 
-            let targets = await this.editorManager.find(editor);
+            let targets = await this.service.editor.find(editor);
             for (let i = 0; i < targets.length; i++)
                 await targets[i].close();
             await wiz.call("remove", { path: editor.path });
@@ -339,7 +336,7 @@ export class Component implements OnInit {
     }
 
     public async upload() {
-        await this.scope.render();
+        await this.service.render();
         $('#file-form-app input').click();
     }
 

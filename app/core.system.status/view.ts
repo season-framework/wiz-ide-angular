@@ -1,12 +1,12 @@
-import { OnInit, Input } from '@angular/core';
+import { OnInit } from '@angular/core';
+import { Service } from '@wiz/service/service';
 
 export class Component implements OnInit {
-    @Input() scope: any;
-    @Input() menu: any;
-
     public APP_ID: string = wiz.namespace;
     public data: any = {};
     public interval_id: any = 0;
+
+    constructor(public service: Service) { }
 
     public timer(time) {
         let minute = Math.round(time / 60);
@@ -19,12 +19,12 @@ export class Component implements OnInit {
     public async ngOnInit() {
         let { data } = await wiz.call("status");
         this.data = data;
-        await this.scope.render();
+        await this.service.render();
 
         this.interval_id = setInterval(async () => {
             let { data } = await wiz.call("status");
             this.data = data;
-            await this.scope.render();
+            await this.service.render();
         }, 1000);
 
     }

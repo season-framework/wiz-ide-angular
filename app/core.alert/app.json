@@ -10,13 +10,9 @@
     "ng": {
         "selector": "wiz-core-alert",
         "inputs": [
-            "title",
-            "message",
-            "action_text",
-            "action_class",
-            "close_text"
+            "model"
         ],
         "outputs": []
     },
-    "template": "wiz-core-alert([title]=\"\", [message]=\"\", [action_text]=\"\", [action_class]=\"\", [close_text]=\"\")"
+    "template": "wiz-core-alert([model]=\"\")"
 }

@@ -9,11 +9,8 @@
     "title": "System Status",
     "ng": {
         "selector": "wiz-core-system-status",
-        "inputs": [
-            "scope",
-            "menu"
-        ],
+        "inputs": [],
         "outputs": []
     },
-    "template": "wiz-core-system-status([scope]=\"\", [menu]=\"\")"
+    "template": "wiz-core-system-status()"
 }

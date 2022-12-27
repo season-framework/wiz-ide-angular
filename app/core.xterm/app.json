@@ -10,11 +10,8 @@
     },
     "ng": {
         "selector": "wiz-core-xterm",
-        "inputs": [
-            "scope",
-            "menu"
-        ],
+        "inputs": [],
         "outputs": []
     },
-    "template": "wiz-core-xterm([scope]=\"\", [menu]=\"\")"
+    "template": "wiz-core-xterm()"
 }

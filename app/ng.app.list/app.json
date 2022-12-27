@@ -11,11 +11,9 @@
         "selector": "wiz-ng-app-list",
         "inputs": [
             "title",
-            "scope",
-            "mode",
-            "menu"
+            "mode"
         ],
         "outputs": []
     },
-    "template": "wiz-ng-app-list([title]=\"\", [scope]=\"\", [mode]=\"\", [menu]=\"\")"
+    "template": "wiz-ng-app-list([title]=\"\", [mode]=\"\")"
 }

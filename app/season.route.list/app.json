@@ -9,10 +9,8 @@
     "category": "app",
     "ng": {
         "selector": "wiz-season-route-list",
-        "inputs": [
-            "scope"
-        ],
+        "inputs": [],
         "outputs": []
     },
-    "template": "wiz-season-route-list([scope]=\"\")"
+    "template": "wiz-season-route-list()"
 }

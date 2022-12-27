@@ -9,10 +9,8 @@
     "category": "app",
     "ng": {
         "selector": "wiz-ng-angular",
-        "inputs": [
-            "scope"
-        ],
+        "inputs": [],
         "outputs": []
     },
-    "template": "wiz-ng-angular([scope]=\"\")"
+    "template": "wiz-ng-angular()"
 }

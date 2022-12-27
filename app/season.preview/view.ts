@@ -1,4 +1,5 @@
-import { OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { OnInit, Output, EventEmitter } from '@angular/core';
+import { Service } from '@wiz/service/service';
 import { DomSanitizer } from '@angular/platform-browser';
 import toastr from "toastr";
 
@@ -21,8 +22,6 @@ toastr.options = {
 };
 
 export class Component implements OnInit {
-    @Input() scope: any;
-    @Input() menu: any;
     @Output() binding = new EventEmitter<any>();
 
     public APP_ID: string = wiz.namespace;
@@ -30,13 +29,13 @@ export class Component implements OnInit {
     public url: string = "/";
     public urlSafe: string;
 
-    constructor(private sanitizer: DomSanitizer) {
+    constructor(private sanitizer: DomSanitizer, public service: Service) {
         this.urlSafe = sanitizer.bypassSecurityTrustResourceUrl("/");
     }
 
     public async loader(status) {
         this.loading = status;
-        await this.scope.render();
+        await this.service.render();
     }
 
     public async ngOnInit() {
@@ -49,7 +48,7 @@ export class Component implements OnInit {
         if (url[0] != "/") url = "/" + url;
         this.url = url;
         this.urlSafe = this.sanitizer.bypassSecurityTrustResourceUrl(url);
-        await this.scope.render();
+        await this.service.render();
     }
 
 }

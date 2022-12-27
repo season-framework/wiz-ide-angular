@@ -1,8 +1,6 @@
-import { FlatTreeControl } from '@angular/cdk/tree';
 import { CollectionViewer, SelectionChange, DataSource } from '@angular/cdk/collections';
 import { BehaviorSubject, merge, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import exp from 'constants';
 
 /** Flat node with expandable and level information */
 export class FileNode {
@@ -116,6 +114,6 @@ export class FileDataSource implements DataSource<FileNode> {
         }
 
         this.dataChange.next(this.data);
-        await this.component.scope.render();
+        await this.component.service.render();
     }
 }

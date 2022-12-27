@@ -9,11 +9,8 @@
     "category": "app",
     "ng": {
         "selector": "wiz-core-app-list",
-        "inputs": [
-            "scope",
-            "menu"
-        ],
+        "inputs": [],
         "outputs": []
     },
-    "template": "wiz-core-app-list([scope]=\"\", [menu]=\"\")"
+    "template": "wiz-core-app-list()"
 }

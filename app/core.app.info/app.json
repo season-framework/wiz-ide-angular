@@ -10,10 +10,9 @@
     "ng": {
         "selector": "wiz-core-app-info",
         "inputs": [
-            "scope",
             "editor"
         ],
         "outputs": []
     },
-    "template": "wiz-core-app-info([scope]=\"\", [editor]=\"\")"
+    "template": "wiz-core-app-info([editor]=\"\")"
 }

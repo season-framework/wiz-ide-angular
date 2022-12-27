@@ -1,4 +1,5 @@
-import { OnInit, Input, ElementRef, ViewChild } from '@angular/core';
+import { OnInit, ElementRef, ViewChild } from '@angular/core';
+import { Service } from '@wiz/service/service';
 import { io } from "socket.io-client";
 import { Terminal } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
@@ -6,18 +7,17 @@ import { SearchAddon } from 'xterm-addon-search';
 import { WebLinksAddon } from 'xterm-addon-web-links';
 
 export class Component implements OnInit {
-    @Input() scope: any;
-    @Input() menu: any;
-
     @ViewChild('terminal')
     public terminal: ElementRef;
 
     public APP_ID: string = wiz.namespace;
 
+    constructor(public service: Service) { }
+
     public async ngOnInit() {
-        await this.scope.render();
-        await this.scope.render(1000);
-        await this.scope.render();
+        await this.service.render();
+        await this.service.render(1000);
+        await this.service.render();
 
         const term = new Terminal({
             cursorBlink: true,

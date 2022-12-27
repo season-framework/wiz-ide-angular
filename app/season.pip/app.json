@@ -9,11 +9,8 @@
     "category": "app",
     "ng": {
         "selector": "wiz-season-pip",
-        "inputs": [
-            "scope",
-            "menu"
-        ],
+        "inputs": [],
         "outputs": []
     },
-    "template": "wiz-season-pip([scope]=\"\", [menu]=\"\")"
+    "template": "wiz-season-pip()"
 }

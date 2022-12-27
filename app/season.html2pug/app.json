@@ -10,11 +10,8 @@
     },
     "ng": {
         "selector": "wiz-season-html2pug",
-        "inputs": [
-            "scope",
-            "menu"
-        ],
+        "inputs": [],
         "outputs": []
     },
-    "template": "wiz-season-html2pug([scope]=\"\", [menu]=\"\")"
+    "template": "wiz-season-html2pug()"
 }

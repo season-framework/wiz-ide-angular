@@ -10,10 +10,9 @@
     "ng": {
         "selector": "wiz-season-route-info",
         "inputs": [
-            "scope",
             "editor"
         ],
         "outputs": []
     },
-    "template": "wiz-season-route-info([scope]=\"\", [editor]=\"\")"
+    "template": "wiz-season-route-info([editor]=\"\")"
 }

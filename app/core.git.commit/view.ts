@@ -1,5 +1,5 @@
-import { OnInit, Input } from '@angular/core';
-import EditorManager from '@wiz/service/editor';
+import { OnInit } from '@angular/core';
+import { Service } from '@wiz/service/service';
 
 import toastr from "toastr";
 toastr.options = {
@@ -21,22 +21,19 @@ toastr.options = {
 };
 
 export class Component implements OnInit {
-    @Input() scope: any;
-    @Input() menu: any;
-
     public APP_ID: string = wiz.namespace;
     public loading: boolean = true;
 
     public files: any = { staged: [], unstaged: [] };
     public message: string = '';
 
-    constructor(private editorManager: EditorManager) {
+    constructor(private service: Service) {
     }
 
     public async ngOnInit() {
         await this.changes();
 
-        this.editorManager.bind('updated', async () => {
+        this.service.editor.bind('updated', async () => {
             await this.changes();
         });
 
@@ -45,7 +42,7 @@ export class Component implements OnInit {
 
     public async loader(status) {
         this.loading = status;
-        await this.scope.render();
+        await this.service.render();
     }
 
     public async reset(file: string | null = null) {

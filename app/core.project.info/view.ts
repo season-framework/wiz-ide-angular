@@ -1,15 +1,17 @@
 import { OnInit, Input } from '@angular/core';
+import { Service } from '@wiz/service/service';
 
 export class Component implements OnInit {
-    @Input() scope: any;
     @Input() editor;
 
     public data: any = { id: null, git: { author: {}, remote: [] } };
     public loading: boolean = true;
 
+    constructor(public service: Service) { }
+
     public async loader(status) {
         this.loading = status;
-        await this.scope.render();
+        await this.service.render();
     }
 
     public async ngOnInit() {
@@ -41,7 +43,7 @@ export class Component implements OnInit {
     }
 
     public async delete() {
-        let res = await this.scope.alert.show({ title: 'Delete', message: `Are you sure to delete '${this.data.project}' project?`, action_text: "Delete", action_class: "btn-danger" });
+        let res = await this.service.alert.show({ title: 'Delete', message: `Are you sure to delete '${this.data.project}' project?`, action_text: "Delete", action_class: "btn-danger" });
         if (!res) return;
 
         await this.loader(true);

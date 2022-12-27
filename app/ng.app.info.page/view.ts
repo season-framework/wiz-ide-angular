@@ -1,13 +1,15 @@
 import { OnInit, Input } from '@angular/core';
+import { Service } from '@wiz/service/service';
 
 export class Component implements OnInit {
-    @Input() scope;
     @Input() editor;
 
     public data: any = {};
     public loading: boolean = true;
     public layout: any = [];
     public ctrls: any = [];
+
+    constructor(public service: Service) { }
 
     public async ngOnInit() {
         let app = wiz.app("ng.app.list");
@@ -19,7 +21,7 @@ export class Component implements OnInit {
 
         this.ctrls = await this.loadControllers();
 
-        await this.scope.render();
+        await this.service.render();
     }
 
     public async loadControllers() {

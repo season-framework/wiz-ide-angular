@@ -1,11 +1,12 @@
 import { OnInit, Input } from '@angular/core';
+import { Service } from '@wiz/service/service';
+
 import $ from 'jquery';
 import toastr from "toastr";
 
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { FileNode, FileDataSource } from './service';
 
-import EditorManager from '@wiz/service/editor';
 import MonacoEditor from "@wiz/app/season.monaco";
 
 toastr.options = {
@@ -30,8 +31,6 @@ toastr.options = {
     MatTreeModule: '@angular/material/tree'
 })
 export class Component implements OnInit {
-    @Input() scope: any;
-    @Input() menu: any;
     @Input() title: string = "Files";
     @Input() path: string;
     
@@ -48,13 +47,13 @@ export class Component implements OnInit {
     private isFolder = (_: number, node: FileNode) => node.type == 'folder';
     private isNew = (_: number, node: FileNode) => node.type == 'new.folder' || node.type == 'new.file';
 
-    constructor(private editorManager: EditorManager) {
+    constructor(private service: Service) {
     }
 
     public active(node: FileNode | null) {
         try {
-            if (this.editorManager.activated) {
-                if (this.editorManager.activated.tab().path == node.path) {
+            if (this.service.editor.activated) {
+                if (this.service.editor.activated.tab().path == node.path) {
                     return true;
                 }
             }
@@ -104,7 +103,7 @@ export class Component implements OnInit {
 
         let { viewref, config } = viewtypes[extension];
 
-        let editor = this.editorManager.create({
+        let editor = this.service.editor.create({
             component_id: this.APP_ID,
             path: node.path,
             title: node.name,
@@ -163,7 +162,7 @@ export class Component implements OnInit {
     public async upload(node: FileNode | null, mode: string = 'file') {
         this.upload_target = node;
         this.upload_mode = mode;
-        await this.scope.render();
+        await this.service.render();
         $('#file-upload').click();
     }
 
@@ -200,7 +199,7 @@ export class Component implements OnInit {
 
     public async delete(node: FileNode) {
         if (node.type != "new.folder" && node.type != "new.file") {
-            let res = await this.scope.alert.show({ title: 'Delete', message: 'Are you sure to delete?', action_text: "Delete", action_class: "btn-danger" });
+            let res = await this.service.alert.show({ title: 'Delete', message: 'Are you sure to delete?', action_text: "Delete", action_class: "btn-danger" });
             if (!res) return;
             await wiz.call("delete", { path: node.path });
         }
@@ -252,7 +251,7 @@ export class Component implements OnInit {
 
     public async loader(status) {
         this.loading = status;
-        await this.scope.render();
+        await this.service.render();
     }
 
     public async ngOnInit() {

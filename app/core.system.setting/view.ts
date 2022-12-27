@@ -1,5 +1,5 @@
-import EditorManager from '@wiz/service/editor';
-import { OnInit, Input } from '@angular/core';
+import { OnInit } from '@angular/core';
+import { Service } from '@wiz/service/service';
 import toastr from "toastr";
 import MonacoEditor from "@wiz/app/season.monaco";
 
@@ -21,16 +21,11 @@ toastr.options = {
     "hideMethod": "fadeOut"
 };
 
-
 export class Component implements OnInit {
-    @Input() scope: any;
-    @Input() menu: any;
-
     public APP_ID: string = wiz.namespace;
     public item: any = null;
 
-    constructor(private editorManager: EditorManager) {
-    }
+    constructor(public service: Service) { }
 
     public async ngOnInit() {
     }
@@ -43,7 +38,7 @@ export class Component implements OnInit {
     }
 
     public async open(name) {
-        let editor = this.editorManager.create({
+        let editor = this.service.editor.create({
             component_id: this.APP_ID,
             path: "/config/" + name + ".py",
             title: name,
