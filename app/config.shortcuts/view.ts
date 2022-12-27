@@ -58,35 +58,35 @@ export class Component implements AfterViewInit {
             monaco: KeyMod.CtrlCmd | KeyCode.Digit1,
             preventDefault: true,
             command: async () => {
-                await this.service.leftmenu.toggle(this.service.leftmenu.top[0].id);
+                await this.service.leftmenu.toggle(this.service.leftmenu.top[0]);
             }
         }, {
             key: ["cmd + 2", "ctrl + 2"],
             monaco: KeyMod.CtrlCmd | KeyCode.Digit2,
             preventDefault: true,
             command: async () => {
-                await this.service.leftmenu.toggle(this.service.leftmenu.top[1].id);
+                await this.service.leftmenu.toggle(this.service.leftmenu.top[1]);
             }
         }, {
             key: ["cmd + 3", "ctrl + 3"],
             monaco: KeyMod.CtrlCmd | KeyCode.Digit3,
             preventDefault: true,
             command: async () => {
-                await this.service.leftmenu.toggle(this.service.leftmenu.top[2].id);
+                await this.service.leftmenu.toggle(this.service.leftmenu.top[2]);
             }
         }, {
             key: ["cmd + 4", "ctrl + 4"],
             monaco: KeyMod.CtrlCmd | KeyCode.Digit4,
             preventDefault: true,
             command: async () => {
-                await this.service.leftmenu.toggle(this.service.leftmenu.top[3].id);
+                await this.service.leftmenu.toggle(this.service.leftmenu.top[3]);
             }
         }, {
             key: ["cmd + 5", "ctrl + 5"],
             monaco: KeyMod.CtrlCmd | KeyCode.Digit5,
             preventDefault: true,
             command: async () => {
-                await this.service.leftmenu.toggle(this.service.leftmenu.top[4].id);
+                await this.service.leftmenu.toggle(this.service.leftmenu.top[4]);
             }
         }, {
             key: ["cmd + p", "ctrl + p"],
@@ -94,6 +94,13 @@ export class Component implements AfterViewInit {
             preventDefault: true,
             command: async () => {
                 await this.service.rightmenu.toggle(this.service.rightmenu.top[0]);
+            }
+        }, {
+            key: ["cmd + k", "ctrl + k"],
+            monaco: KeyMod.CtrlCmd | KeyCode.KeyK,
+            preventDefault: true,
+            command: async () => {
+                await this.service.rightmenu.toggle(this.service.rightmenu.bottom[0]);
             }
         }, {
             key: ["esc"],

@@ -16,31 +16,32 @@ export class Component implements OnInit {
 
     public async ngOnInit() {
         await this.service.render();
-        await this.service.render(1000);
-        await this.service.render();
 
-        const term = new Terminal({
-            cursorBlink: true,
-            macOptionIsMeta: true,
-            scrollback: true,
-        });
-        term.attachCustomKeyEventHandler(customKeyEventHandler);
+        const modw = 9;
+        const modh = 17;
+
+        let { offsetWidth, offsetHeight } = this.terminal.nativeElement;
+
+        let cols = Math.floor(offsetWidth / modw) - 1;
+        let rows = Math.floor(offsetHeight / modh);
+
+        await this.service.render();
+        const term = new Terminal({ cursorBlink: true, macOptionIsMeta: true });
         const fit = new FitAddon();
-        term.loadAddon(fit);
         term.loadAddon(new WebLinksAddon());
         term.loadAddon(new SearchAddon());
+        term.loadAddon(fit);
+
+        term.resize(cols, rows);
 
         term.open(this.terminal.nativeElement);
         term.writeln("Welcome to wiz.term!");
-        term.writeln("You can copy with ctrl+shift+x");
-        term.writeln("You can paste with ctrl+shift+v");
         term.writeln('')
         term.onData((data) => {
             socket.emit("ptyinput", { input: data });
         });
 
         const socket = io.connect("/wiz/ide/app/core.xterm");
-
         socket.on("ptyoutput", function (data) {
             term.write(data.output);
         });
@@ -56,27 +57,6 @@ export class Component implements OnInit {
             fit.fit();
             const dims = { cols: term.cols, rows: term.rows };
             socket.emit("resize", dims);
-        }
-
-        function customKeyEventHandler(e) {
-            if (e.type !== "keydown") {
-                return true;
-            }
-            if (e.ctrlKey && e.shiftKey) {
-                const key = e.key.toLowerCase();
-                if (key === "v") {
-                    navigator.clipboard.readText().then((toPaste) => {
-                        term.writeText(toPaste);
-                    });
-                    return false;
-                } else if (key === "c" || key === "x") {
-                    const toCopy = term.getSelection();
-                    navigator.clipboard.writeText(toCopy);
-                    term.focus();
-                    return false;
-                }
-            }
-            return true;
         }
     }
 }
