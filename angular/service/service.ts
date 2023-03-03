@@ -56,6 +56,12 @@ export class Service {
         if (tag == 'server') {
             let style = Style.base.join(';') + ';';
             style += Style.server.join(';');
+	    if (value.includes(`[build][error]`)) {
+                toastr.error(`Build failed`);
+            }
+            else {
+                toastr.info(`Builded`);
+            }
             console.log(`%cwiz.was%c ` + value, style, null);
         } else {
             let style = Style.base.join(';') + ';';
