@@ -59,7 +59,7 @@ export class Service {
 	    if (value.includes(`[build][error]`)) {
                 toastr.error(`Build failed`);
             }
-            else {
+            else if(value.includes(`EsBuild complete in`)) {
                 toastr.info(`Builded`);
             }
             console.log(`%cwiz.was%c ` + value, style, null);
