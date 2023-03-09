@@ -1,8 +1,0 @@
-.dropdown.me-1(ngbDropdown="")
-    button.btn.btn-secondary.dropdown-toggle(type="button" ngbDropdownToggle="dropdown" aria-expanded="false") {{branch.current}}
-    ul.dropdown-menu(ngbDropdownMenu="")
-        a(*ngFor="let branch of branch.data", ngbDropdownItem="", href="?branch={{branch}}") {{branch}}
-
-a.btn.btn-primary.me-1(href="?dev={{!isdev}}") {{isdev ? 'develop' : 'product'}}
-a.btn.btn-primary.me-1((click)="clean()") Build
-a.btn.btn-primary.me-1((click)="scope.update()") Save

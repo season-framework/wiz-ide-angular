@@ -1,5 +1,6 @@
 import { Component, OnInit, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { Service } from '@wiz/service/service';
+import pluginJson from '@wiz/libs/plugin.json';
 
 import toastr from "toastr";
 
@@ -35,6 +36,9 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     public async ngOnInit() {
         await this.service.init(this);
+        this.service.leftmenu.build(pluginJson.main, pluginJson.sub);
+        this.service.rightmenu.build(pluginJson.app, pluginJson.setting);
+        this.service.overlay.build(pluginJson.overlay, []);
     }
 
     public async ngAfterViewInit() {

@@ -24,7 +24,9 @@ export default class Menu {
         await this.service.render();
     }
 
-    public async build(top: any, bottom: any) {
+    public async build(top: any = [], bottom: any = []) {
+        if (!top) top = [];
+        if (!bottom) bottom = [];
         this.top = [];
         this.bottom = [];
 

@@ -1,23 +1,8 @@
 .workspace
-    .workspace-header.area-round
-        .workspace-title
-            img.m-0(src="assets/logo.png")
-        
-        .workspace-header-menu.row.align-items-center
-            .col-auto
-                span.status-indicator.status-indicator-animated.status-primary
-                    span.status-indicator-circle
-                    span.status-indicator-circle
-                    span.status-indicator-circle
-
-            .col(style="line-height: 1;")
-                h2.page-title @wiz.title
-
-            .col-auto.actions.if-desktop
-                wiz-core-topmenu
-
     .workspace-body
         .workspace-leftmenu
+            .p-2.bg-blue
+                img.wiz-logo(src="@wiz.baseuri/assets/icon.png")
             .d-block(*ngFor="let item of service.leftmenu.top")
                 .btn((click)="service.leftmenu.toggle(item)", [ngClass]="service.leftmenu.isActive(item.id)")
                     i(class="{{ item.icon }}")
@@ -34,8 +19,8 @@
                             i(class="{{ item.icon }}")
                         span {{ item.name }}
 
-        .workspace-leftapp.area-round(*ngIf="service.leftmenu.mode")
-            wiz-config-leftmenu([menu]="service.leftmenu")
+        .workspace-leftapp.area-round(*ngIf="service.leftmenu.mode", style="width: {{ service.leftmenu.width ? service.leftmenu.width : 240 }}px;")
+            wiz-core-system-config-leftmenu([menu]="service.leftmenu")
 
         .workspace-editor
             .editor-list([sortablejs]="service.editor.editable", [sortablejsOptions]="{ animation: 150, handle: '.editor-header' }")
@@ -55,15 +40,15 @@
                         
                     .editor-container(*ngIf="item.tab()")
                         .editor-overlay
-                        wiz-core-editor([editor]="item")
+                        wiz-core-system-editor([editor]="item")
 
             .editor-minified(*ngIf="service.editor.minified.length > 0")
                 .minified-padding
                 .minified-item(*ngFor="let item of service.editor.minified", (click)="item.activate()") 
                     span {{item.title}}
 
-        .workspace-rightapp(*ngIf="service.rightmenu.mode", style="width: {{ service.rightmenu.width ? service.rightmenu.width : 360 }}px;")
-            wiz-config-rightmenu([menu]="service.rightmenu")
+        .workspace-rightapp(*ngIf="service.rightmenu.mode", style="width: {{ service.rightmenu.width ? service.rightmenu.width : 280 }}px;")
+            wiz-core-system-config-rightmenu([menu]="service.rightmenu")
 
         .workspace-rightmenu
             .d-block(*ngFor="let item of service.rightmenu.top")
@@ -81,8 +66,18 @@
                         span {{ item.name }}
                         .sidemenu-icon
                             i(class="{{ item.icon }}")
+            
+            .d-block
+                .btn((click)="service.editor.update()")
+                    i.fa-solid.fa-floppy-disk
+                    .hover-area
+                        span Save
+                        .sidemenu-icon
+                            i.fa-solid.fa-floppy-disk
 
-    wiz-config-shortcuts
+.menu-overlay(*ngIf="service.overlay.mode")
+    wiz-core-system-overlay([menu]="service.overlay")
 
 ngx-loading([show]="service.loading.isshow")
-wiz-core-alert([model]="service.alert")
+wiz-core-system-alert([model]="service.alert")
+ng-keyboard-shortcuts([shortcuts]="service.shortcut.data")

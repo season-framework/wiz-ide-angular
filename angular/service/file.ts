@@ -158,6 +158,7 @@ export default class File {
     public async select(uopts: any = {}) {
         delete this.filenode;
         let opts: any = {
+            type: 'file',
             accept: null,
             multiple: true
         };
@@ -167,6 +168,10 @@ export default class File {
         }
 
         let filenode = this.filenode = $(`<input type='file' ${opts.accept ? `accept='${opts.accept}'` : ''} ${opts.multiple ? 'multiple' : ''} />`);
+        if (opts.type == 'folder') {
+            filenode = this.filenode = $(`<input type='file' webkitdirectory mozdirectory msdirectory odirectory directory multiple/>`);
+        }
+        
         let fn: any = () => new Promise((resolve) => {
             filenode.change(async () => {
                 let res = filenode.prop('files');

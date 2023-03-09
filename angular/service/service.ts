@@ -5,6 +5,7 @@ import Loading from './loading';
 import Editor from './editor';
 import Menu from './menu';
 import Event from './event';
+import Shortcut from './shortcut';
 
 @Injectable({ providedIn: 'root' })
 export class Service {
@@ -13,11 +14,12 @@ export class Service {
     public loading: Loading;
     public editor: Editor;
     public event: Event;
-    
+
     public leftmenu: Menu;
     public rightmenu: Menu;
-    
-    public shortcuts: any;
+    public overlay: Menu;
+
+    public shortcut: Shortcut;
     public app: any;
 
     constructor() { }
@@ -30,9 +32,12 @@ export class Service {
             this.loading = new Loading(this);
             this.editor = new Editor(this);
             this.event = new Event(this);
+            this.leftmenu = new Menu(this, 'workspace.app.list');
+            this.rightmenu = new Menu(this, null);
+            this.overlay = new Menu(this, null);
+            this.shortcut = new Shortcut(this);
 
-            this.leftmenu = new Menu(this, 'page');
-            this.rightmenu = new Menu(this, 'project');
+            await this.shortcut.bindDefault();
         }
         return this;
     }
@@ -56,7 +61,7 @@ export class Service {
         if (tag == 'server') {
             let style = Style.base.join(';') + ';';
             style += Style.server.join(';');
-	    if (value.includes(`[build][error]`)) {
+            if (value.includes(`[build][error]`)) {
                 toastr.error(`Build failed`);
             }
             else if(value.includes(`EsBuild complete in`)) {

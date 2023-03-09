@@ -229,7 +229,7 @@
                     display: none;
                     padding: 8px 20px;
                     height: 32px;
-                    margin-top: -23px;
+                    margin-top: -22px;
                     min-width: 80px;
                     background-color: var(--wiz-color-blue);
                     color: #fff;
@@ -313,4 +313,14 @@
             display: block;
         }
     }
+}
+
+.menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 5000;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, .3);
 }
