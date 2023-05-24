@@ -34,6 +34,7 @@
         "ngc-esbuild": "^0.0.83",
         "pug": "^3.0.2",
         "rxjs": "~7.8.1",
+        "showdown": "^2.1.0",
         "socket.io-client": "^4.6.1",
         "sortablejs": "^1.15.0",
         "toastr": "^2.1.4",
@@ -55,6 +56,6 @@
         "karma-coverage": "~2.2.0",
         "karma-jasmine": "~5.1.0",
         "karma-jasmine-html-reporter": "~2.0.0",
-        "typescript": "~5.0.4"
+        "typescript": "~4.9.5"
     }
 }
